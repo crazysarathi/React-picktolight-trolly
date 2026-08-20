@@ -1,0 +1,218 @@
+/* Bai Jamjuree is self-hosted via @fontsource (imported in src/index.js) so the kiosk works offline. */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 7%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 7%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 217 100% 69%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217 19% 27%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 19% 27%;
+    --muted-foreground: 210 40% 98%;
+
+    --accent: 217 19% 27%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 19% 27%;
+    --input: 217 19% 27%;
+    --ring: 217 100% 69%;
+
+    --radius: 0.75rem;
+
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  html {
+    /* Kiosk: no rubber-band / pull-to-refresh, no double-tap zoom delay */
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-color: #010a25;
+    font-family: "Bai Jamjuree", sans-serif;
+    min-height: 100vh;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Gradient lives on its own stacking context — painted once, never repainted on scroll */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      radial-gradient(ellipse 70% 55% at 50% 45%, rgba(14, 60, 120, 0.55) 0%, rgba(2, 30, 59, 0.25) 50%, transparent 100%),
+      linear-gradient(to bottom, #010a25, #021e3b, #01112c);
+    background-repeat: no-repeat;
+    background-size: cover;
+    pointer-events: none;
+  }
+
+  input,
+  textarea {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  button {
+    touch-action: manipulation;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 175, 229, 0.45) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: rgba(139, 175, 229, 0.45);
+    border-radius: 999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(139, 175, 229, 0.7);
+  }
+}
+
+@layer components {
+  /* Full-viewport kiosk root: fills the 10" panel exactly, never scrolls the page */
+  .kiosk-root {
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .kiosk-root.kiosk-no-cursor,
+  .kiosk-root.kiosk-no-cursor * {
+    cursor: none !important;
+  }
+
+  /* Animated scan line: element is full height, the visible line is its bottom edge.
+     translateY(-100%) → translateY(0) sweeps it top→bottom (transform only, GPU friendly),
+     then it jumps back to the top and sweeps again — like a real scanner beam. */
+  @keyframes kiosk-scan-sweep {
+    0% {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    6% {
+      opacity: 1;
+    }
+    94% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(0%);
+      opacity: 0;
+    }
+  }
+
+  .scan-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 100%;
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        transparent 62%,
+        rgba(95, 166, 255, 0.06) 84%,
+        rgba(95, 166, 255, 0.32) 97%,
+        #8cc4ff 100%);
+    animation: kiosk-scan-sweep 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+    will-change: transform, opacity;
+    pointer-events: none;
+  }
+
+  .scan-line.is-paused {
+    animation-play-state: paused;
+  }
+
+  .scan-corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border-color: #5fa6ff;
+    border-style: solid;
+    border-width: 0;
+    border-radius: 2px;
+  }
+
+  .scan-corner.tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-top-left-radius: 10px; }
+  .scan-corner.tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 10px; }
+  .scan-corner.bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 10px; }
+  .scan-corner.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-line,
+  .animate-pulse-ring,
+  .animate-float-slow,
+  .animate-soft-pulse {
+    animation: none !important;
+  }
+}
+
+@layer components {
+  /* One full-height screen inside .kiosk-root (intro / welcome / scanner / completion) */
+  .kiosk-screen {
+    position: relative;
+    flex: 1 1 0%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
