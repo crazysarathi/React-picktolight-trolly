@@ -84,3 +84,4 @@ Future serial / camera / backend adapter  ─┘
 * Set `kioskConfig.hideCursor = true` to hide the pointer, `backgroundMotion = false` on the weakest boards.
 * All animations use transforms/opacity only (no WebGL, no blur filters); fonts are self-hosted so the
   kiosk works offline. Abandoned orders reset after `timings.idleTimeoutMs` (default 3 min).
+# React-picktolight-trolly
