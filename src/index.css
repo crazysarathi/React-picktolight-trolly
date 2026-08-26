@@ -51,6 +51,14 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* 12" portrait kiosk panel (1200×1920): the whole UI is sized in rem, so scaling the root
+     font-size scales text, icons, paddings and gaps together for readable arm's-length use. */
+  @media (min-width: 1100px) and (min-height: 1500px) {
+    html {
+      font-size: 20px;
+    }
+  }
+
   body {
     @apply bg-background text-foreground;
     background-color: #010a25;

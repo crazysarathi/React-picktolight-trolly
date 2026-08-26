@@ -63,9 +63,11 @@ module.exports = {
         DEFAULT: "0.75rem",
       },
       screens: {
-        // Kiosk helpers: the 10" panel is 1024x600 (landscape, short height)
+        // Kiosk helpers: the 10" panel is 1024x600 (landscape, short height),
+        // the 12" portrait panel is 1200x1920 (extra tall, scaled-up root font)
         "h-short": { raw: "(max-height: 640px)" },
         "h-tall": { raw: "(min-height: 641px)" },
+        "h-xtall": { raw: "(min-height: 1500px)" },
       },
       keyframes: {
         "pulse-ring": {

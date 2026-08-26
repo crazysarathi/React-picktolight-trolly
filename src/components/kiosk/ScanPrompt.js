@@ -27,7 +27,7 @@ export default function ScanPrompt({ progress, paused = false, className }) {
         <div className="flex shrink-0 items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2.5 text-ot-action">
             <ScanBarcode className="h-5 w-5 shrink-0" strokeWidth={1.75} />
-            <span className="truncate text-xs md:text-sm font-bold uppercase tracking-[0.25em]">Scan medicine barcode</span>
+            <span className="truncate text-xs md:text-sm font-bold uppercase tracking-[0.25em] h-xtall:tracking-[0.15em]">Scan medicine barcode</span>
           </div>
           {progress && (
             <span className="shrink-0 text-xs md:text-sm font-semibold text-white tabular-nums">{progress.remaining} remaining</span>

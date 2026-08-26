@@ -83,7 +83,7 @@ export default function OrderStats({ order, progress, className }) {
       value: plural(progress.collected, 'Item'),
       icon: <PackageCheck className="h-5 w-5" strokeWidth={1.75} />,
       tone: 'green',
-      className: 'h-tall:col-span-2',
+      className: 'h-tall:col-span-2 h-xtall:col-span-3',
     },
     {
       key: 'pending',
@@ -91,7 +91,7 @@ export default function OrderStats({ order, progress, className }) {
       value: plural(progress.remaining, 'Item'),
       icon: <Hourglass className="h-5 w-5" strokeWidth={1.75} />,
       tone: 'amber',
-      className: 'h-tall:col-span-2',
+      className: 'h-tall:col-span-2 h-xtall:col-span-3',
     },
     {
       key: 'completion',
@@ -99,7 +99,7 @@ export default function OrderStats({ order, progress, className }) {
       value: `${progress.percent}%`,
       icon: <CompletionRing percent={progress.percent} className="h-6 w-6" />,
       tone: 'blue',
-      className: 'h-tall:col-span-2',
+      className: 'h-tall:col-span-2 h-xtall:col-span-6',
     },
   ];
 
