@@ -108,7 +108,7 @@ export default function ScannerScreen({
             className="order-2 md:order-1 max-h-[50vh] md:max-h-none"
           />
 
-          {/* Right column: patient details · order tiles · scan card (takes all the remaining height) */}
+          {/* Right column: patient details · order tiles · scan card (fills the remaining height down to the bottom of the page) */}
           <div className="order-1 md:order-2 flex min-h-0 flex-col gap-3 md:gap-4 h-short:gap-2.5 md:max-h-full md:overflow-y-auto md:overflow-x-hidden">
             <PatientCard order={order} />
             <OrderStats order={order} progress={progress} />

@@ -21,28 +21,32 @@ export default function PatientCard({ order, className }) {
   ].filter((r) => r.value);
 
   return (
-    <Card className={cn('flex shrink-0 flex-col p-3 h-tall:p-4', className)} role="region" aria-label="Patient details">
+    <Card className={cn('flex shrink-0 flex-col p-3 h-tall:p-6', className)} role="region" aria-label="Patient details">
       <p className="text-xs uppercase tracking-[0.3em] text-ot-text-muted">Patient details</p>
 
-      <div className="mt-2 flex items-center gap-3">
-        <div className="flex h-12 w-12 h-tall:h-14 h-tall:w-14 shrink-0 items-center justify-center rounded-2xl border border-ot-border bg-gradient-to-b from-ot-surface-elev-top to-ot-surface-elev-bottom text-ot-action">
-          <UserRound className="h-6 w-6 h-tall:h-7 h-tall:w-7" strokeWidth={1.75} />
+      <div className="mt-2 h-tall:mt-4 flex items-center gap-3 h-tall:gap-4">
+        <div className="flex h-12 w-12 h-tall:h-16 h-tall:w-16 shrink-0 items-center justify-center rounded-2xl border border-ot-border bg-gradient-to-b from-ot-surface-elev-top to-ot-surface-elev-bottom text-ot-action">
+          <UserRound className="h-6 w-6 h-tall:h-8 h-tall:w-8" strokeWidth={1.75} />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="line-clamp-2 break-words text-[clamp(1.2rem,2.6vw,1.75rem)] font-semibold leading-tight text-white">
+          <h2 className="line-clamp-2 break-words text-[clamp(1.2rem,2.6vw,1.9rem)] font-semibold leading-tight text-white">
             {name}
           </h2>
-          {meta.length > 0 && <p className="mt-0.5 text-sm md:text-base leading-tight text-ot-text-muted">{meta.join(' · ')}</p>}
+          {meta.length > 0 && <p className="mt-0.5 h-tall:mt-1 text-sm md:text-base leading-tight text-ot-text-muted">{meta.join(' · ')}</p>}
         </div>
       </div>
 
       {rows.length > 0 && (
-        <dl className="mt-1.5 h-tall:mt-3 grid grid-cols-1 gap-x-4 gap-y-1 h-tall:gap-y-1.5 sm:grid-cols-2">
+        <dl className="mt-2 h-tall:mt-6 grid grid-cols-1 gap-x-4 gap-y-2 h-tall:gap-y-5 sm:grid-cols-2">
           {rows.map(({ Icon, label, value, wide }) => (
-            <div key={label} className={cn('flex min-w-0 items-center gap-2', wide && 'sm:col-span-2')}>
-              <Icon className="h-4 w-4 shrink-0 text-ot-action/80" strokeWidth={1.75} />
-              <dt className="shrink-0 text-[0.7rem] uppercase tracking-[0.15em] text-ot-text-muted">{label}</dt>
-              <dd className="min-w-0 truncate text-sm md:text-base text-white tabular-nums">{value}</dd>
+            <div key={label} className={cn('min-w-0', wide && 'sm:col-span-2')}>
+              <dt className="flex items-center gap-2 text-[0.7rem] h-tall:text-xs uppercase tracking-[0.15em] text-ot-text-muted">
+                <Icon className="h-4 w-4 shrink-0 text-ot-action/80" strokeWidth={1.75} />
+                {label}
+              </dt>
+              <dd className="mt-0.5 h-tall:mt-1.5 min-w-0 truncate pl-6 text-sm md:text-base h-tall:text-xl text-white tabular-nums">
+                {value}
+              </dd>
             </div>
           ))}
         </dl>
