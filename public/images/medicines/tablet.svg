@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="foil" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9dcf5"/><stop offset="1" stop-color="#8fb3e3"/></linearGradient>
+    <radialGradient id="pill" cx="0.4" cy="0.35" r="0.7"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d6e4f7"/></radialGradient>
+  </defs>
+  <g transform="rotate(-12 64 64)">
+    <rect x="20" y="30" width="88" height="68" rx="8" fill="#0e2e54" opacity="0.5" transform="translate(3 4)"/>
+    <rect x="20" y="30" width="88" height="68" rx="8" fill="url(#foil)"/>
+    <rect x="20" y="30" width="88" height="68" rx="8" fill="none" stroke="#ffffff" stroke-opacity="0.6"/>
+    <g fill="url(#pill)" stroke="#5fa6ff" stroke-opacity="0.6" stroke-width="1.5">
+      <circle cx="38" cy="48" r="8"/><circle cx="64" cy="48" r="8"/><circle cx="90" cy="48" r="8"/>
+      <circle cx="38" cy="80" r="8"/><circle cx="64" cy="80" r="8"/><circle cx="90" cy="80" r="8"/>
+    </g>
+    <g stroke="#5fa6ff" stroke-opacity="0.7" stroke-width="1.5" stroke-linecap="round">
+      <path d="M32 48h12M58 48h12M84 48h12M32 80h12M58 80h12M84 80h12"/>
+    </g>
+    <path d="M26 64h76" stroke="#ffffff" stroke-opacity="0.45" stroke-dasharray="3 3"/>
+  </g>
+</svg>

@@ -27,7 +27,7 @@ export const pharmacyData = {
  *  quantity      default number of packs (an order line can override it)
  *  dosage        how to take it (shown in the expanded row)
  *  manufacturer  shown in the expanded row
- *  image         optional image URL/path (small!). Empty → an icon for `form` is shown instead.
+ *  image         pack photo path (public/images/medicines/<id>.webp (background removed), see SOURCES.md there). Empty → the sample illustration for `form` is shown instead.
  */
 export const medicines = [
   {
@@ -39,7 +39,7 @@ export const medicines = [
     quantity: 1,
     dosage: "1 tablet every 6 hours after food",
     manufacturer: "Sun Pharma",
-    image: "",
+    image: "/images/medicines/MED001.webp",
   },
   {
     id: "MED002",
@@ -50,7 +50,7 @@ export const medicines = [
     quantity: 2,
     dosage: "1 capsule once a week with milk",
     manufacturer: "Cipla",
-    image: "",
+    image: "/images/medicines/MED002.webp",
   },
   {
     id: "MED003",
@@ -61,7 +61,7 @@ export const medicines = [
     quantity: 1,
     dosage: "1 capsule three times a day for 5 days",
     manufacturer: "Alkem",
-    image: "",
+    image: "/images/medicines/MED003.webp",
   },
   {
     id: "MED004",
@@ -72,7 +72,7 @@ export const medicines = [
     quantity: 1,
     dosage: "1 tablet at night",
     manufacturer: "Dr. Reddy's",
-    image: "",
+    image: "/images/medicines/MED004.webp",
   },
   {
     id: "MED005",
@@ -83,23 +83,23 @@ export const medicines = [
     quantity: 1,
     dosage: "10 ml three times a day",
     manufacturer: "Abbott",
-    image: "",
+    image: "/images/medicines/MED005.webp",
   },
-  { id: "MED006", barcode: "896", name: "Azithromycin 500mg", form: "tablet", pack: "Strip of 3 tablets", quantity: 1, dosage: "1 tablet once a day for 3 days", manufacturer: "Zydus", image: "" },
-  { id: "MED007", barcode: "897", name: "Metformin 500mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 2, dosage: "1 tablet twice a day after food", manufacturer: "USV", image: "" },
-  { id: "MED008", barcode: "898", name: "Atorvastatin 10mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at bedtime", manufacturer: "Ranbaxy", image: "" },
-  { id: "MED009", barcode: "899", name: "Pantoprazole 40mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet before breakfast", manufacturer: "Alkem", image: "" },
-  { id: "MED010", barcode: "900", name: "Amlodipine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet every morning", manufacturer: "Cipla", image: "" },
-  { id: "MED011", barcode: "901", name: "Ibuprofen 400mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet after food when needed", manufacturer: "Abbott", image: "" },
-  { id: "MED012", barcode: "902", name: "Omeprazole 20mg", form: "capsule", pack: "Strip of 10 capsules", quantity: 1, dosage: "1 capsule before breakfast", manufacturer: "Dr. Reddy's", image: "" },
-  { id: "MED013", barcode: "903", name: "Levocetirizine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at night", manufacturer: "Sun Pharma", image: "" },
-  { id: "MED014", barcode: "904", name: "ORS Sachets", form: "other", pack: "Box of 10 sachets", quantity: 1, dosage: "Dissolve 1 sachet in 1 litre of water", manufacturer: "FDC", image: "" },
-  { id: "MED015", barcode: "905", name: "Saline Nasal Drops", form: "drops", pack: "10 ml bottle", quantity: 1, dosage: "2 drops in each nostril three times a day", manufacturer: "Cipla", image: "" },
-  { id: "MED016", barcode: "906", name: "Salbutamol Inhaler", form: "inhaler", pack: "200 doses", quantity: 1, dosage: "2 puffs when breathless", manufacturer: "Cipla", image: "" },
-  { id: "MED017", barcode: "907", name: "Clotrimazole Cream 1%", form: "cream", pack: "20 g tube", quantity: 1, dosage: "Apply thinly twice a day", manufacturer: "Glenmark", image: "" },
-  { id: "MED018", barcode: "908", name: "Insulin Glargine", form: "injection", pack: "3 ml pen", quantity: 1, dosage: "10 units at bedtime as advised", manufacturer: "Sanofi", image: "" },
-  { id: "MED019", barcode: "909", name: "Multivitamin Syrup", form: "syrup", pack: "200 ml bottle", quantity: 1, dosage: "10 ml once a day", manufacturer: "Pfizer", image: "" },
-  { id: "MED020", barcode: "910", name: "Calcium + Vitamin D3", form: "tablet", pack: "Strip of 15 tablets", quantity: 1, dosage: "1 tablet after lunch", manufacturer: "Abbott", image: "" },
+  { id: "MED006", barcode: "896", name: "Azithromycin 500mg", form: "tablet", pack: "Strip of 3 tablets", quantity: 1, dosage: "1 tablet once a day for 3 days", manufacturer: "Zydus", image: "/images/medicines/MED006.webp" },
+  { id: "MED007", barcode: "897", name: "Metformin 500mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 2, dosage: "1 tablet twice a day after food", manufacturer: "USV", image: "/images/medicines/MED007.webp" },
+  { id: "MED008", barcode: "898", name: "Atorvastatin 10mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at bedtime", manufacturer: "Ranbaxy", image: "/images/medicines/MED008.webp" },
+  { id: "MED009", barcode: "899", name: "Pantoprazole 40mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet before breakfast", manufacturer: "Alkem", image: "/images/medicines/MED009.webp" },
+  { id: "MED010", barcode: "900", name: "Amlodipine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet every morning", manufacturer: "Cipla", image: "/images/medicines/MED010.webp" },
+  { id: "MED011", barcode: "901", name: "Ibuprofen 400mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet after food when needed", manufacturer: "Abbott", image: "/images/medicines/MED011.webp" },
+  { id: "MED012", barcode: "902", name: "Omeprazole 20mg", form: "capsule", pack: "Strip of 10 capsules", quantity: 1, dosage: "1 capsule before breakfast", manufacturer: "Dr. Reddy's", image: "/images/medicines/MED012.webp" },
+  { id: "MED013", barcode: "903", name: "Levocetirizine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at night", manufacturer: "Sun Pharma", image: "/images/medicines/MED013.webp" },
+  { id: "MED014", barcode: "904", name: "ORS Sachets", form: "other", pack: "Box of 10 sachets", quantity: 1, dosage: "Dissolve 1 sachet in 1 litre of water", manufacturer: "FDC", image: "/images/medicines/MED014.webp" },
+  { id: "MED015", barcode: "905", name: "Saline Nasal Drops", form: "drops", pack: "10 ml bottle", quantity: 1, dosage: "2 drops in each nostril three times a day", manufacturer: "Cipla", image: "/images/medicines/MED015.webp" },
+  { id: "MED016", barcode: "906", name: "Salbutamol Inhaler", form: "inhaler", pack: "200 doses", quantity: 1, dosage: "2 puffs when breathless", manufacturer: "Cipla", image: "/images/medicines/MED016.webp" },
+  { id: "MED017", barcode: "907", name: "Clotrimazole Cream 1%", form: "cream", pack: "20 g tube", quantity: 1, dosage: "Apply thinly twice a day", manufacturer: "Glenmark", image: "/images/medicines/MED017.webp" },
+  { id: "MED018", barcode: "908", name: "Insulin Glargine", form: "injection", pack: "3 ml pen", quantity: 1, dosage: "10 units at bedtime as advised", manufacturer: "Sanofi", image: "/images/medicines/MED018.webp" },
+  { id: "MED019", barcode: "909", name: "Multivitamin Syrup", form: "syrup", pack: "200 ml bottle", quantity: 1, dosage: "10 ml once a day", manufacturer: "Pfizer", image: "/images/medicines/MED019.webp" },
+  { id: "MED020", barcode: "910", name: "Calcium + Vitamin D3", form: "tablet", pack: "Strip of 15 tablets", quantity: 1, dosage: "1 tablet after lunch", manufacturer: "Abbott", image: "/images/medicines/MED020.webp" },
 ];
 
 /**
@@ -116,7 +116,7 @@ export const medicines = [
  */
 export const orders = [
   {
-    barcode: "1001",
+    barcode: "111001",
     reference: "ORD-1001",
     patient: {
       name: "Kumar",
@@ -135,7 +135,7 @@ export const orders = [
     ],
   },
   {
-    barcode: "1002",
+    barcode: "111002",
     reference: "ORD-1002",
     patient: {
       name: "Priya Sharma",
@@ -151,7 +151,7 @@ export const orders = [
     ],
   },
   {
-    barcode: "1003",
+    barcode: "111003",
     reference: "ORD-1003",
     patient: {
       name: "Arun Prakash",
@@ -169,8 +169,8 @@ export const orders = [
   },
   {
     // Large order (every medicine of the catalogue) — handy to test the scrolling collection list
-    barcode: "1004",
-    reference: "ORD-1004",
+    barcode: "1121125101363",
+    reference: "ORD-1363",
     patient: {
       name: "Lakshmi Devi",
       age: 63,
@@ -211,7 +211,7 @@ export const kioskConfig = {
     errorMs: 2600,          // wrong / unknown barcode / order-not-found message
     duplicateMs: 2200,      // "already collected" message
     completionDelayMs: 900, // pause after the last check-mark before the completion screen
-    idleTimeoutMs: 180000,  // no touch/scan for this long during an order → back to the order-scan screen (0 = never)
+    idleTimeoutMs: 0,       // no touch/scan for this long during an order → back to the order-scan screen (0 = never; auto-return switched off)
   },
   confirmOrderStart: true,  // after the order barcode is scanned, show "Order found — START?" before the collection screen
   hideCursor: false,        // set true on the Raspberry Pi kiosk to hide the mouse pointer

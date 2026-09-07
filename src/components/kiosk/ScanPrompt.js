@@ -34,9 +34,9 @@ export default function ScanPrompt({ progress, paused = false, className }) {
           )}
         </div>
 
-        <ScanArea paused={paused} label="Scan barcode here" className="mt-2 h-tall:mt-3 min-h-[5rem] flex-1" />
+        <ScanArea paused={paused} label="Scan barcode here" className="mt-2 h-tall:mt-3 min-h-[5rem] flex-1" iconClassName="h-xtall:w-10 h-xtall:h-10" />
 
-        <p className="mt-2 h-tall:mt-3 shrink-0 text-center text-xs md:text-sm text-ot-text-muted">
+        <p className="mt-2 h-tall:mt-3 shrink-0 text-center text-xs md:text-sm text-ot-text-muted h-xtall:hidden">
           Hold the medicine barcode under the scanner
         </p>
       </Card>

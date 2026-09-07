@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="box" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe0f7"/></linearGradient>
+  </defs>
+  <path d="M24 44l40-20 40 20v44l-40 20-40-20z" fill="#0e2e54" opacity="0.45" transform="translate(3 5)"/>
+  <path d="M24 44l40-20 40 20-40 20z" fill="#e6f0ff"/>
+  <path d="M24 44l40 20v44L24 88z" fill="url(#box)"/>
+  <path d="M104 44L64 64v44l40-20z" fill="#8cc4ff"/>
+  <path d="M24 44l40-20 40 20v44l-40 20-40-20z" fill="none" stroke="#ffffff" stroke-opacity="0.6"/>
+  <path d="M84 78v-8l-8-4v8z M76 74l8 4" fill="none"/>
+  <path d="M80 90v-16M72 86l16-8" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M40 60v14M33 64l14 7" stroke="#5fa6ff" stroke-width="4" stroke-linecap="round"/>
+</svg>

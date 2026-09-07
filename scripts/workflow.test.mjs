@@ -24,13 +24,13 @@ const catalogue = [
 ];
 const orders = [
   {
-    barcode: '1001',
+    barcode: '111001',
     reference: 'ORD-1001',
     patient: { name: 'Kumar', age: 46, gender: 'Male', patientId: 'PT-1', phone: '98400 12345', doctor: 'Dr. N' },
     items: [{ medicineId: 'A' }, { medicineId: 'B', quantity: 3 }, { medicineId: 'C' }],
   },
-  { barcode: '1002', reference: 'ORD-1002', items: [] },
-  { barcode: '1003', reference: 'ORD-1003', customer: 'Legacy Name', items: [{ medicineId: 'B' }, { medicineId: 'C' }, { medicineId: 'B', quantity: 1 }] },
+  { barcode: '111002', reference: 'ORD-1002', items: [] },
+  { barcode: '111003', reference: 'ORD-1003', customer: 'Legacy Name', items: [{ medicineId: 'B' }, { medicineId: 'C' }, { medicineId: 'B', quantity: 1 }] },
 ];
 const meds = resolveOrder(orders[0], catalogue).medicines;
 
@@ -50,14 +50,14 @@ const test = (name, fn) => {
 console.log('order resolver');
 
 test('findOrderByBarcode resolves catalogue medicines, quantity overrides and patient details', () => {
-  const o = findOrderByBarcode(' 1001 ', { orders, medicines: catalogue });
+  const o = findOrderByBarcode(' 111001 ', { orders, medicines: catalogue });
   assert.equal(o.reference, 'ORD-1001');
   assert.equal(o.medicines.length, 3);
   assert.equal(o.medicines[0].quantity, 1);
   assert.equal(o.medicines[1].quantity, 3);
   assert.equal(o.medicines[1].name, 'Vitamin D3');
   assert.deepEqual(o.patient, { name: 'Kumar', age: 46, gender: 'Male', patientId: 'PT-1', phone: '98400 12345', doctor: 'Dr. N' });
-  assert.equal(findOrderByBarcode('9999', { orders, medicines: catalogue }), null);
+  assert.equal(findOrderByBarcode('119999', { orders, medicines: catalogue }), null);
   assert.equal(findOrderByBarcode('', { orders, medicines: catalogue }), null);
 });
 
@@ -81,7 +81,7 @@ test('unknown medicineId lines are skipped, empty orders resolve to []', () => {
 });
 
 test('getKnownBarcodes lists order + medicine barcodes', () => {
-  assert.deepEqual(getKnownBarcodes({ orders, medicines: catalogue }), ['1001', '1002', '1003', '891', '892', '893']);
+  assert.deepEqual(getKnownBarcodes({ orders, medicines: catalogue }), ['111001', '111002', '111003', '891', '892', '893']);
 });
 
 console.log('workflow reducer');
@@ -99,17 +99,27 @@ test('kiosk opens on order-scan → START_ORDER → scanning with every medicine
   assert.deepEqual(getRemainingMedicines(s).map((m) => m.id), ['A', 'B', 'C']);
 });
 
-test('unknown main barcode → order-not-found feedback, stays on order-scan; dismiss clears', () => {
+test('unknown main barcode (with 11 prefix) → order-not-found feedback, stays on order-scan; dismiss clears', () => {
   let s = createInitialState();
-  s = r(s, { type: 'ORDER_NOT_FOUND', barcode: '4242', at: 5 });
+  s = r(s, { type: 'ORDER_NOT_FOUND', barcode: '114242', at: 5 });
   assert.equal(s.phase, PHASES.ORDER_SCAN);
   assert.equal(s.feedback.type, SCAN_RESULT.ORDER_NOT_FOUND);
-  assert.equal(s.feedback.barcode, '4242');
+  assert.equal(s.feedback.barcode, '114242');
   s = r(s, { type: 'DISMISS_FEEDBACK' });
   assert.equal(s.feedback, null);
-  // ORDER_NOT_FOUND is ignored outside the order-scan phase
+  // ORDER_NOT_FOUND is ignored outside the order-scan/order-confirm phase
   const sc = startOrder();
-  assert.equal(r(sc, { type: 'ORDER_NOT_FOUND', barcode: '1' }), sc);
+  assert.equal(r(sc, { type: 'ORDER_NOT_FOUND', barcode: '111' }), sc);
+});
+
+test('invalid prescription prefix (not starting with 11) → invalid-prescription-prefix feedback', () => {
+  let s = createInitialState();
+  s = r(s, { type: 'INVALID_PRESCRIPTION_PREFIX', barcode: '156', at: 5 });
+  assert.equal(s.phase, PHASES.ORDER_SCAN);
+  assert.equal(s.feedback.type, SCAN_RESULT.INVALID_PRESCRIPTION_PREFIX);
+  assert.equal(s.feedback.barcode, '156');
+  s = r(s, { type: 'DISMISS_FEEDBACK' });
+  assert.equal(s.feedback, null);
 });
 
 test('medicine scans are ignored outside the scanning phase', () => {

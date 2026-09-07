@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="capA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8cc4ff"/><stop offset="1" stop-color="#3f86dd"/></linearGradient>
+    <linearGradient id="capB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe0f7"/></linearGradient>
+  </defs>
+  <g transform="rotate(-35 64 64)">
+    <rect x="14" y="48" width="100" height="32" rx="16" fill="#0e2e54" opacity="0.45" transform="translate(3 5)"/>
+    <path d="M30 48h34v32H30a16 16 0 0 1 0-32z" fill="url(#capA)"/>
+    <path d="M64 48h34a16 16 0 0 1 0 32H64z" fill="url(#capB)"/>
+    <rect x="14" y="48" width="100" height="32" rx="16" fill="none" stroke="#ffffff" stroke-opacity="0.55"/>
+    <path d="M24 56c8-4 26-4 34-3" stroke="#ffffff" stroke-opacity="0.7" stroke-width="3" stroke-linecap="round"/>
+    <path d="M64 48v32" stroke="#0e2e54" stroke-opacity="0.35" stroke-width="1.5"/>
+  </g>
+  <g transform="translate(78 22) rotate(-35)">
+    <rect x="0" y="0" width="30" height="12" rx="6" fill="#5fa6ff"/>
+    <path d="M15 0h9a6 6 0 0 1 0 12h-9z" fill="#ffffff"/>
+  </g>
+</svg>

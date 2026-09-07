@@ -1,174 +1,104 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Card } from 'components/ui/card';
 import AnimatedCheck from 'components/kiosk/AnimatedCheck';
 import { MEDICINE_STATUS } from 'lib/workflow';
 import { EASE } from 'components/kiosk/motion';
 import { cn } from 'lib/utils';
 
-const ROW_STYLES = {
-  [MEDICINE_STATUS.COLLECTED]: 'border-emerald-400/25 bg-emerald-400/[0.06]',
-  [MEDICINE_STATUS.PENDING]: 'border-ot-border/50 bg-ot-surface-bottom/30',
-};
-
-const FORM_LABEL = {
-  tablet: 'Tablet',
-  capsule: 'Capsule',
-  syrup: 'Syrup',
-  drops: 'Drops',
-  injection: 'Injection',
-  inhaler: 'Inhaler',
-  cream: 'Cream',
-  other: 'Other',
-};
-
-/** Expanded row details: quantity + everything known about the pack. */
-function MedicineDetails({ medicine }) {
-  const qty = Number(medicine.quantity) || 0;
-  const rows = [
-    ['Pack', medicine.pack],
-    ['Dosage', medicine.dosage],
-    ['Manufacturer', medicine.manufacturer],
-    ['Barcode', medicine.barcode],
-  ].filter(([, v]) => v);
-
-  return (
-    <div className="border-t border-ot-border/40 px-3 pb-3 pt-2.5">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="inline-flex items-baseline gap-1.5 rounded-lg border border-ot-action/40 bg-ot-action/10 px-2.5 py-1">
-          <span className="text-xs uppercase tracking-[0.2em] text-ot-action">Quantity</span>
-          <span className="text-xl font-bold leading-none text-white tabular-nums">{qty}</span>
-          <span className="text-xs text-ot-text-muted">{qty === 1 ? 'pack' : 'packs'}</span>
-        </span>
-        {medicine.form && (
-          <span className="rounded-lg border border-ot-border/60 bg-ot-surface-bottom/60 px-2.5 py-1.5 text-xs uppercase tracking-[0.2em] text-ot-text-muted">
-            {FORM_LABEL[medicine.form] || medicine.form}
-          </span>
-        )}
-      </div>
-      <dl className="mt-2 space-y-1 text-sm leading-snug">
-        {rows.map(([label, value]) => (
-          <div key={label} className="flex gap-2">
-            <dt className="w-24 shrink-0 text-ot-text-muted">{label}</dt>
-            <dd className={cn('min-w-0 flex-1 text-white', label === 'Barcode' && 'tabular-nums')}>{value}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  );
-}
-
-function MedicineListItem({ medicine, index, status, expanded, onToggle }) {
+function MedicineListItem({ medicine, index, status, active, isNext, onSelect }) {
   const isCollected = status === MEDICINE_STATUS.COLLECTED;
+
+  // Keep the highlighted row in view when it moves (after a scan the next pack is highlighted)
+  const ref = useRef(null);
+  useEffect(() => {
+    if (active && ref.current?.scrollIntoView) ref.current.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }, [active]);
 
   return (
     <motion.li
-      className={cn('relative overflow-hidden rounded-xl border transition-colors duration-500', ROW_STYLES[status])}
+      ref={ref}
+      className={cn(
+        'overflow-hidden rounded-xl border transition-colors duration-500',
+        isCollected
+          ? 'border-emerald-400/25 bg-emerald-400/[0.06]'
+          : active
+            ? 'border-ot-action/70 bg-ot-action/[0.12] shadow-[0_0_0_1px_rgba(95,166,255,0.2)]'
+            : 'border-ot-border/50 bg-ot-surface-bottom/30'
+      )}
       initial={false}
-      animate={{ opacity: isCollected ? 0.8 : 1 }}
+      animate={{ opacity: isCollected && !active ? 0.75 : 1 }}
       transition={{ duration: 0.5 }}
     >
       <button
         type="button"
-        onClick={onToggle}
-        aria-expanded={expanded}
-        className="flex w-full items-center gap-3 px-3 py-2 h-tall:py-3 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        onClick={onSelect}
+        aria-pressed={active}
+        className="flex w-full items-center gap-2.5 h-tall:gap-3 px-2.5 h-tall:px-3 py-1.5 h-tall:py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         <div
           className={cn(
-            'flex h-9 w-9 h-tall:h-11 h-tall:w-11 shrink-0 items-center justify-center rounded-full border transition-colors duration-500',
+            'flex h-8 w-8 h-tall:h-9 h-tall:w-9 shrink-0 items-center justify-center rounded-full border transition-colors duration-500',
             isCollected ? 'border-emerald-400/50 bg-emerald-400/10 text-emerald-400' : 'border-ot-action/50 bg-ot-action/10 text-ot-action'
           )}
         >
           {isCollected ? (
-            <AnimatedCheck className="h-6 w-6 h-tall:h-7 h-tall:w-7" strokeWidth={4} ring={false} />
+            <AnimatedCheck className="h-5 w-5 h-tall:h-6 h-tall:w-6" strokeWidth={4} ring={false} />
           ) : (
-            <span className="text-sm font-semibold tabular-nums">{index + 1}</span>
+            <span className="text-sm h-tall:text-base font-semibold tabular-nums">{index + 1}</span>
           )}
         </div>
 
-        <div className="min-w-0 flex-1">
-          <p
-            className={cn(
-              'line-clamp-2 break-words text-base h-tall:text-lg font-semibold leading-tight',
-              isCollected ? 'text-ot-text-muted line-through decoration-emerald-400/40' : 'text-white'
-            )}
-          >
-            {medicine.name}
-          </p>
-          <p className="mt-0.5 truncate text-sm leading-tight text-ot-text-muted">
-            Qty {medicine.quantity}
-            {medicine.pack ? ` · ${medicine.pack}` : ''}
-          </p>
-        </div>
+        <p
+          className={cn(
+            'min-w-0 flex-1 truncate text-base h-tall:text-lg font-semibold leading-tight',
+            isCollected ? 'text-ot-text-muted line-through decoration-emerald-400/40' : 'text-white'
+          )}
+        >
+          {medicine.name}
+        </p>
+
+        <span className="shrink-0 text-sm h-tall:text-base leading-none text-ot-text-muted tabular-nums">Qty {medicine.quantity}</span>
 
         <span
           className={cn(
-            'shrink-0 text-[0.7rem] font-semibold uppercase tracking-[0.1em]',
-            isCollected ? 'text-emerald-400/90' : 'text-ot-action/80'
+            'hidden md:inline-block shrink-0 rounded-full border px-2 py-0.5 h-tall:px-2.5 text-[0.65rem] h-tall:text-xs font-semibold uppercase tracking-[0.12em]',
+            isCollected
+              ? 'border-emerald-400/30 text-emerald-400/90'
+              : isNext
+                ? 'border-ot-action/60 bg-ot-action/15 text-ot-action'
+                : 'border-transparent text-ot-action/70'
           )}
         >
-          {isCollected ? 'Collected' : 'To collect'}
+          {isCollected ? 'Collected' : isNext ? 'Scan next' : 'To collect'}
         </span>
-        <ChevronDown
-          className={cn('h-5 w-5 shrink-0 text-ot-text-muted transition-transform duration-300', expanded && 'rotate-180')}
-        />
       </button>
-
-      <AnimatePresence initial={false}>
-        {expanded && (
-          <motion.div
-            key="details"
-            className="overflow-hidden"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: EASE.out }}
-          >
-            <MedicineDetails medicine={medicine} />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.li>
   );
 }
 
 /**
- * Collection list: ✓ collected · ○ to collect. There is no fixed sequence — scan the packs in any order
- * and the matching row ticks off. Any row can be tapped to see quantity + pack details.
+ * Compact "Your medicines are ready to collect" picker: ✓ collected · ○ to collect, scanned in any order.
+ * One line per medicine; the highlighted row (`activeId`) is the one shown large in CurrentMedicine —
+ * it follows the next pack to collect and any row the user taps (`onSelect`).
  */
-export default function MedicineList({ medicines, statuses, progress, allCollected, className }) {
-  const [expandedId, setExpandedId] = useState(null);
+export default function MedicineList({ medicines, statuses, progress, allCollected, activeId, onSelect, className }) {
+  const nextIndex = statuses.findIndex((s) => s !== MEDICINE_STATUS.COLLECTED);
+  const nextId = nextIndex >= 0 ? medicines[nextIndex].id : null;
 
   return (
-    <Card className={cn('flex min-h-0 flex-col overflow-hidden', className)}>
-      <div className="flex shrink-0 items-end justify-between gap-3 px-4 md:px-5 pt-2.5 pb-2 h-tall:pt-4 h-tall:pb-3">
-        <div className="min-w-0">
-          <p className="text-xs uppercase tracking-[0.3em] text-ot-text-muted">Your medicines · any order</p>
-          <h2 className="text-lg md:text-xl font-semibold text-white leading-tight">Collection list</h2>
+    <Card className={cn('flex min-h-0 flex-col overflow-hidden', className)} role="region" aria-label="Collection list, any order">
+      <div className="shrink-0 px-3 h-tall:px-4 pt-2.5 h-tall:pt-3 pb-2">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="min-w-0 truncate text-base md:text-lg h-xtall:text-xl font-semibold text-white leading-tight">
+            Your medicines are ready to collect
+          </h2>
+          <div className="shrink-0 text-right leading-none">
+            <span className="text-xl md:text-2xl h-xtall:text-3xl font-semibold text-white tabular-nums">{progress.collected}</span>
+            <span className="text-ot-text-muted text-sm md:text-base h-xtall:text-lg tabular-nums"> / {progress.total}</span>
+          </div>
         </div>
-        <div className="shrink-0 text-right leading-none">
-          <span className="text-2xl md:text-3xl font-semibold text-white tabular-nums">{progress.collected}</span>
-          <span className="text-ot-text-muted text-base md:text-lg tabular-nums"> / {progress.total}</span>
-        </div>
-      </div>
-
-      <ul className="min-h-0 flex-1 space-y-1.5 h-tall:space-y-2 overflow-y-auto px-3 pb-1 h-tall:pb-2">
-        {medicines.map((medicine, index) => (
-          <MedicineListItem
-            key={medicine.id}
-            medicine={medicine}
-            index={index}
-            status={statuses[index]}
-            expanded={expandedId === medicine.id}
-            onToggle={() => setExpandedId((id) => (id === medicine.id ? null : medicine.id))}
-          />
-        ))}
-      </ul>
-
-      <div className="flex shrink-0 items-center gap-3 px-4 md:px-5 pb-3 pt-1.5 h-tall:pb-4 h-tall:pt-2">
-        <div className="h-2 flex-1 overflow-hidden rounded-full border border-ot-border/50 bg-ot-surface-bottom">
+        <div className="mt-1.5 h-tall:mt-2 h-1.5 w-full overflow-hidden rounded-full border border-ot-border/50 bg-ot-surface-bottom">
           <motion.div
             className="h-full w-full origin-left rounded-full bg-ot-action"
             initial={false}
@@ -176,10 +106,21 @@ export default function MedicineList({ medicines, statuses, progress, allCollect
             transition={{ duration: 0.6, ease: EASE.out }}
           />
         </div>
-        <p className="shrink-0 text-xs md:text-sm text-ot-text-muted tabular-nums">
-          {allCollected ? 'All collected' : `${progress.remaining} remaining`}
-        </p>
       </div>
+
+      <ul className="kiosk-scroll min-h-0 flex-1 space-y-1.5 px-2.5 h-tall:px-3 pb-2.5 h-tall:pb-3">
+        {medicines.map((medicine, index) => (
+          <MedicineListItem
+            key={medicine.id}
+            medicine={medicine}
+            index={index}
+            status={statuses[index]}
+            isNext={!allCollected && medicine.id === nextId}
+            active={activeId === medicine.id}
+            onSelect={() => onSelect?.(medicine.id)}
+          />
+        ))}
+      </ul>
     </Card>
   );
 }

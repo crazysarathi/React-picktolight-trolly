@@ -30,6 +30,13 @@ const CONTENT = {
     body: (fb) => `Barcode ${fb.barcode} does not match any order.`,
     hint: (helpNote) => `Please scan the barcode on your order slip. ${helpNote || ''}`.trim(),
   },
+  [SCAN_RESULT.INVALID_PRESCRIPTION_PREFIX]: {
+    Icon: FileQuestion,
+    tone: 'amber',
+    title: 'Prescription Code Not Matched',
+    body: (fb) => `Barcode ${fb.barcode} is not a valid prescription barcode.`,
+    hint: (helpNote) => `Main prescription barcodes must start with prefix '11'. ${helpNote || ''}`.trim(),
+  },
 };
 
 const TONES = {

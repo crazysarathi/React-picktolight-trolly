@@ -29,6 +29,7 @@ export const SCAN_RESULT = Object.freeze({
   UNKNOWN: 'unknown',                 // barcode not part of this order
   DUPLICATE: 'duplicate',             // medicine already collected
   ORDER_NOT_FOUND: 'order-not-found', // main barcode does not match any order
+  INVALID_PRESCRIPTION_PREFIX: 'invalid-prescription-prefix', // main prescription barcode prefix does not start with 11
   IGNORED: 'ignored',                 // not in scanning phase / empty order / everything already collected
 });
 
@@ -180,6 +181,13 @@ export function workflowReducer(state, action) {
       const barcode = normalizeBarcode(action.barcode);
       if (!barcode) return state;
       return withFeedback(state, { type: SCAN_RESULT.ORDER_NOT_FOUND, barcode, medicine: null }, action);
+    }
+
+    case 'INVALID_PRESCRIPTION_PREFIX': {
+      if (state.phase !== PHASES.ORDER_SCAN) return state;
+      const barcode = normalizeBarcode(action.barcode);
+      if (!barcode) return state;
+      return withFeedback(state, { type: SCAN_RESULT.INVALID_PRESCRIPTION_PREFIX, barcode, medicine: null }, action);
     }
 
     case 'SCAN': {

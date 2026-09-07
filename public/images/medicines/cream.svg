@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="tube" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#cfe0f7"/></linearGradient>
+  </defs>
+  <g transform="rotate(-30 64 64)">
+    <rect x="12" y="52" width="14" height="24" rx="3" fill="#5fa6ff"/>
+    <path d="M26 56h8v16h-8z" fill="#a7bedf"/>
+    <path d="M34 50h64l8 4v20l-8 4H34z" fill="url(#tube)" stroke="#8cc4ff" stroke-opacity="0.7"/>
+    <path d="M98 50l8 4v20l-8 4" fill="#a7bedf" fill-opacity="0.6"/>
+    <rect x="44" y="55" width="34" height="18" rx="3" fill="#5fa6ff"/>
+    <path d="M49 61h24M49 67h16" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <path d="M22 100c8-10 22-8 26 0 4-6 14-6 16 2H18c0-1 2-1 4-2z" fill="#ffffff" fill-opacity="0.9"/>
+</svg>

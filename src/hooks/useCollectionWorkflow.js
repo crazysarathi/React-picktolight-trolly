@@ -32,13 +32,17 @@ export function useCollectionWorkflow({ orders, medicines, config, scanEnabled =
       (scan) => {
         const phase = stateRef.current.phase;
         if (phase === PHASES.ORDER_SCAN || phase === PHASES.ORDER_CONFIRM) {
-          const order = findOrderByBarcode(scan.barcode, { orders, medicines });
-          if (order) {
-            const type = config.confirmOrderStart === false ? 'START_ORDER' : 'ORDER_FOUND';
-            dispatch({ type, order, medicines: order.medicines, at: scan.timestamp });
+          const code = String(scan.barcode ?? '').trim().replace(/\s+/g, '');
+          if (!code.startsWith('11')) {
+            dispatch({ type: 'INVALID_PRESCRIPTION_PREFIX', barcode: scan.barcode, at: scan.timestamp, source: scan.source });
           } else {
-            // (ignored by the reducer while the confirmation is open)
-            dispatch({ type: 'ORDER_NOT_FOUND', barcode: scan.barcode, at: scan.timestamp, source: scan.source });
+            const order = findOrderByBarcode(scan.barcode, { orders, medicines });
+            if (order) {
+              const type = config.confirmOrderStart === false ? 'START_ORDER' : 'ORDER_FOUND';
+              dispatch({ type, order, medicines: order.medicines, at: scan.timestamp });
+            } else {
+              dispatch({ type: 'ORDER_NOT_FOUND', barcode: scan.barcode, at: scan.timestamp, source: scan.source });
+            }
           }
         } else if (phase === PHASES.SCANNING) {
           dispatch({ type: 'SCAN', barcode: scan.barcode, at: scan.timestamp, source: scan.source });

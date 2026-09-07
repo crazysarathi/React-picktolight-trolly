@@ -7,7 +7,7 @@ import { cn } from 'lib/utils';
  * Pure CSS animations (transform/opacity only). `paused` freezes the line while
  * a result overlay is displayed. Give it a height (or let it flex) via `className`.
  */
-export default function ScanArea({ paused = false, label = 'Scan barcode', className }) {
+export default function ScanArea({ paused = false, label = 'Scan barcode', className, iconClassName }) {
   return (
     <div className={cn('relative w-full', className)}>
       <span
@@ -25,7 +25,7 @@ export default function ScanArea({ paused = false, label = 'Scan barcode', class
         </div>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
-          <ScanBarcode className="w-12 h-12 md:w-16 md:h-16 text-ot-action/75" strokeWidth={1.5} />
+          <ScanBarcode className={cn('w-12 h-12 md:w-16 md:h-16 text-ot-action/75', iconClassName)} strokeWidth={1.5} />
           <div className="flex items-center gap-3 text-ot-text-muted">
             <span className="h-px w-8 md:w-12 bg-ot-border" />
             <span className="text-[0.65rem] md:text-xs font-semibold tracking-[0.35em] uppercase">{label}</span>
