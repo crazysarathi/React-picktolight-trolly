@@ -32,6 +32,12 @@
 | **Borders** | Standard (rgba) | `rgba(139, 175, 229, 0.35)` |
 | **Text** | Muted | `#a7bedf` |
 
+Every `ot-*` token is a CSS variable ("r g b" channels, defaults in `src/index.css :root`; `ot-border` is always used with
+an alpha, `/35` being the standard border). While an order with a `teamColor` is open, `KioskPage` overrides them all with
+shades derived from that team's colour (`src/lib/teamTheme.js`): surfaces, accent text (`ot-action`, a light tint), borders,
+solid buttons (`ot-action-fill` = the team colour, `ot-action-fg` = white or dark text depending on its luminance) and the
+focus ring. Only the semantic status colours (emerald = collected / success, amber = pending / warning) stay fixed.
+
 ### Shadcn Base Variables (HSL)
 - **Background**: `222 47% 7%`
 - **Foreground**: `210 40% 98%`

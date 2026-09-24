@@ -1,10 +1,11 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ScanBarcode, PackageCheck } from 'lucide-react';
+import { UserRound, MapPin } from 'lucide-react';
 import { Card } from 'components/ui/card';
 import AnimatedCheck from 'components/kiosk/AnimatedCheck';
-import MedicineVisual from 'components/kiosk/MedicineVisual';
+import InfoStrip from 'components/kiosk/InfoStrip';
 import { MEDICINE_STATUS } from 'lib/workflow';
+import { locationSegments } from 'lib/locations';
 import { EASE } from 'components/kiosk/motion';
 import { cn } from 'lib/utils';
 
@@ -16,52 +17,67 @@ const swapVariants = {
 };
 
 /**
- * The big "current medicine" card — the one thing the patient has to look at: picture, NAME and how many
- * packs to take. It follows the next un-collected medicine automatically and any row tapped in the list.
- * Takes the lion's share of the page (see ScannerScreen), at the top, with the compact list under it.
+ * The "current medicine" card — what the picker has to look at: NAME and how many packs to take, with two small
+ * strips at the top: PATIENT → ORDER (who it is for) and WALL → CUPBOARD → SHELF (where the pack is kept,
+ * `location` from lib/locations.js — the route map beside the scanner lights the same cupboard).
+ * It follows the next un-collected medicine automatically and any row tapped in the list (see ScannerScreen).
  */
-export default function CurrentMedicine({ medicine, index, total, status, isNext, allCollected, className }) {
+export default function CurrentMedicine({ medicine, index, total, status, isNext, allCollected, order, location, className, style }) {
   const isCollected = status === MEDICINE_STATUS.COLLECTED;
   const qty = Number(medicine?.quantity) || 0;
-  const eyebrow = allCollected
-    ? 'All done'
-    : isCollected
-      ? 'Already collected'
-      : isNext
-        ? 'Collect this medicine now'
-        : 'Selected medicine';
   const green = allCollected || isCollected;
+  const patientName = order?.patient?.name;
+  const segments = locationSegments(location);
 
   return (
     <Card
       role="region"
       aria-label="Current medicine"
+      style={style}
       className={cn(
-        'relative flex min-h-0 flex-col overflow-hidden p-3 h-tall:p-5 h-xtall:p-6',
+        'relative flex min-h-0 flex-col overflow-hidden p-3 h-tall:p-4 h-xtall:p-5',
+        'transition-[box-shadow,border-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]',
         green
           ? 'border-emerald-400/40 shadow-[0_0_0_1px_rgba(52,211,153,0.15)]'
-          : 'border-ot-action/50 shadow-[0_0_0_1px_rgba(95,166,255,0.18),0_30px_80px_-40px_rgba(95,166,255,0.6)]',
+          : 'border-ot-action/50 shadow-[0_0_0_1px_rgb(var(--ot-action)/0.18),0_30px_80px_-40px_rgb(var(--ot-action)/0.6)]',
         className
       )}
     >
-      {/* Title row: what to do · position in the order */}
-      <div className="flex shrink-0 items-center justify-between gap-3">
-        <div className={cn('flex min-w-0 items-center gap-2.5', green ? 'text-emerald-400' : 'text-ot-action')}>
-          {green ? (
-            <PackageCheck className="h-5 w-5 h-xtall:h-6 h-xtall:w-6 shrink-0" strokeWidth={1.75} />
-          ) : (
-            <ScanBarcode className="h-5 w-5 h-xtall:h-6 h-xtall:w-6 shrink-0" strokeWidth={1.75} />
-          )}
-          <span className="truncate text-xs md:text-sm h-xtall:text-base font-bold uppercase tracking-[0.25em] h-xtall:tracking-[0.18em]">
-            {eyebrow}
-          </span>
-        </div>
+      {/* Row 1: patient → order · position in the order */}
+      <div className="flex shrink-0 items-center justify-between gap-2">
+        <InfoStrip
+          aria-label="Patient and order"
+          Icon={UserRound}
+          segments={[
+            { label: 'Patient', value: patientName },
+            { label: 'Order', value: order?.reference },
+          ]}
+          className="min-w-0"
+        />
         {medicine && !allCollected && (
           <span className="shrink-0 rounded-full border border-ot-border/60 bg-ot-surface-bottom/60 px-3 py-1 text-xs md:text-sm h-xtall:text-base font-semibold text-ot-text-muted tabular-nums">
             Medicine {index + 1} of {total}
           </span>
         )}
       </div>
+
+      {/* Row 2: where the pack is kept — Wall → Cupboard → Shelf */}
+      {medicine && !allCollected && (
+        <div className="mt-2 h-xtall:mt-3 flex shrink-0 items-center">
+          {segments.length > 0 ? (
+            <InfoStrip
+              aria-label="Where to find it"
+              tone={isCollected ? 'muted' : 'action'}
+              size="md"
+              Icon={MapPin}
+              segments={segments}
+              className="min-w-0"
+            />
+          ) : (
+            <span className="text-xs md:text-sm text-ot-text-muted/70">Location not set for this medicine</span>
+          )}
+        </div>
+      )}
 
       <div className="relative min-h-0 flex-1">
         <AnimatePresence mode="wait" initial={false}>
@@ -74,16 +90,18 @@ export default function CurrentMedicine({ medicine, index, total, status, isNext
               animate="animate"
               exit="exit"
             >
-              <AnimatedCheck className="h-24 w-24 h-tall:h-36 h-tall:w-36 text-emerald-400" />
-              <p className="text-2xl h-tall:text-4xl font-semibold text-white">All medicines collected</p>
-              <p className="text-base h-tall:text-xl text-ot-text-muted">
-                {total} of {total} packs are in your bag
-              </p>
+              <div className="flex flex-col items-center gap-3">
+                <AnimatedCheck className="h-20 w-20 h-tall:h-28 h-tall:w-28 text-emerald-400" />
+                <p className="text-2xl h-tall:text-4xl font-semibold text-white">All medicines collected</p>
+                <p className="text-base h-tall:text-xl text-ot-text-muted">
+                  {total} of {total} packs are in your bag
+                </p>
+              </div>
             </motion.div>
           ) : medicine ? (
             <motion.div
               key={medicine.id}
-              className="absolute inset-0 flex flex-col items-center justify-center gap-3 h-tall:gap-5 text-center h-short:flex-row h-short:gap-5 h-short:text-left"
+              className="absolute inset-0 flex flex-col items-center justify-center gap-2 h-tall:gap-4 text-center"
               variants={swapVariants}
               initial="initial"
               animate="animate"
@@ -100,31 +118,32 @@ export default function CurrentMedicine({ medicine, index, total, status, isNext
                 )}
               /> */}
 
-              <div className="flex min-w-0 max-w-full flex-col items-center gap-2 h-tall:gap-3 h-short:items-start">
+              {/* Name + count block (kept ≤ 76 % wide so long names wrap inside the card's padding) */}
+              <div className="flex min-w-0 max-w-[76%] flex-col items-center gap-1.5 h-tall:gap-2.5">
                 <h2
                   className={cn(
-                    'line-clamp-2 break-words text-3xl h-tall:text-5xl h-xtall:text-7xl font-bold leading-tight',
+                    'line-clamp-2 break-words text-2xl h-tall:text-4xl h-xtall:text-6xl font-bold leading-tight',
                     isCollected ? 'text-ot-text-muted line-through decoration-emerald-400/50' : 'text-white'
                   )}
                 >
                   {medicine.name}
                 </h2>
                 {medicine.pack && (
-                  <p className="truncate max-w-full text-base h-tall:text-xl h-xtall:text-2xl text-ot-text-muted">{medicine.pack}</p>
+                  <p className="truncate max-w-full text-sm h-tall:text-lg h-xtall:text-2xl text-ot-text-muted">{medicine.pack}</p>
                 )}
 
-                {/* Count — the second thing the patient must know */}
+                {/* Count — the second thing the picker must know */}
                 <div
                   className={cn(
-                    'mt-1 h-tall:mt-3 inline-flex items-baseline gap-3 h-tall:gap-4 rounded-2xl border px-5 py-2 h-tall:px-7 h-tall:py-3',
+                    'mt-1 h-tall:mt-2 inline-flex items-baseline gap-2.5 h-tall:gap-3 rounded-2xl border px-4 py-1.5 h-tall:px-6 h-tall:py-2.5',
                     isCollected ? 'border-emerald-400/40 bg-emerald-400/10' : 'border-ot-action/50 bg-ot-action/10'
                   )}
                 >
-                  <span className={cn('text-xs h-tall:text-sm h-xtall:text-base font-bold uppercase tracking-[0.25em]', isCollected ? 'text-emerald-400' : 'text-ot-action')}>
+                  <span className={cn('text-[0.65rem] h-tall:text-sm h-xtall:text-base font-bold uppercase tracking-[0.25em]', isCollected ? 'text-emerald-400' : 'text-ot-action')}>
                     Quantity
                   </span>
-                  <span className="text-5xl h-tall:text-7xl h-xtall:text-8xl font-bold leading-none text-white tabular-nums">{qty}</span>
-                  <span className="text-base h-tall:text-xl h-xtall:text-2xl text-ot-text-muted">{qty === 1 ? 'pack' : 'packs'}</span>
+                  <span className="text-4xl h-tall:text-6xl h-xtall:text-7xl font-bold leading-none text-white tabular-nums">{qty}</span>
+                  <span className="text-sm h-tall:text-lg h-xtall:text-2xl text-ot-text-muted">{qty === 1 ? 'pack' : 'packs'}</span>
                 </div>
               </div>
             </motion.div>

@@ -14,7 +14,7 @@ export function BrandLogo({ logo, name, size = 'md', className }) {
   return (
     <div
       className={cn(
-        'bg-ot-action text-white flex items-center justify-center shrink-0 shadow-[0_10px_30px_-10px_rgba(95,166,255,0.6)]',
+        'bg-ot-action-fill text-ot-action-fg flex items-center justify-center shrink-0 shadow-[0_10px_30px_-10px_rgb(var(--ot-action-fill)/0.6)]',
         s.box,
         className
       )}

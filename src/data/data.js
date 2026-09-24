@@ -17,6 +17,49 @@ export const pharmacyData = {
 };
 
 /**
+ * TEAM COLOURS — the picking teams / trolleys. Every order carries a `teamColor` (one of the keys below).
+ * From the moment that order is opened (the START confirmation and the whole collection screen) the WHOLE
+ * kiosk — page background, cards, tiles, buttons, overlays — is re-tinted in this colour, so the picker sees
+ * at a glance which team's trolley the order goes to. Only two colours are needed per team; every other
+ * shade (cards, accent text, borders, buttons and their text colour) is derived from them (src/lib/teamTheme.js).
+ *
+ *  label   team name shown on the "Order found" card and under the collection-screen title
+ *  from    page colour at the top of the screen (the vivid team colour)
+ *  to      page colour at the bottom of the screen (a deeper shade of the same colour)
+ */
+export const teamColors = {
+  red:    { label: "Red",    from: "#dc2626", to: "#7f1d1d" },
+  yellow: { label: "Yellow", from: "#facc15", to: "#a16207" },
+  green:  { label: "Green",  from: "#22c55e", to: "#14532d" },
+  violet: { label: "Violet", from: "#8b5cf6", to: "#4c1d95" },
+  orange: { label: "Orange", from: "#f97316", to: "#7c2d12" },
+  blue:   { label: "Blue",   from: "#3b82f6", to: "#1e3a8a" },
+};
+
+/**
+ * STORE ROOM LAYOUT — the picking room drawn on the ROUTE MAP beside the scanner.
+ * A square room: the picker comes in with the trolley through the open (bottom) side; the other three walls
+ * carry the cupboards, every cupboard has shelves and ONE LED. The map lights the cupboard of the medicine to
+ * collect next and animates the walking route to it from the entrance.
+ *
+ *  entranceLabel  caption of the start point at the bottom of the map
+ *  walls[]  id         the letter used in a medicine `location.wall`
+ *           label      shown in the location strip above the medicine name
+ *           side       left | back | right — where the wall is drawn (the entrance is always the bottom side)
+ *           cupboards  number of cupboards along that wall, numbered 1…n starting at the entrance
+ *                      (left / right walls: front → back, back wall: left → right)
+ *           shelves    shelves per cupboard, numbered 1…n from the bottom
+ */
+export const storeLayout = {
+  entranceLabel: "Entrance",
+  walls: [
+    { id: "A", label: "Wall A", side: "left",  cupboards: 3, shelves: 4 },
+    { id: "B", label: "Wall B", side: "back",  cupboards: 4, shelves: 5 },
+    { id: "C", label: "Wall C", side: "right", cupboards: 3, shelves: 4 },
+  ],
+};
+
+/**
  * MEDICINE CATALOGUE — every medicine the kiosk can hand out.
  *
  *  id            unique id (orders reference it)
@@ -27,6 +70,9 @@ export const pharmacyData = {
  *  quantity      default number of packs (an order line can override it)
  *  dosage        how to take it (shown in the expanded row)
  *  manufacturer  shown in the expanded row
+ *  location      { wall, cupboard, shelf } — where the pack is kept in the picking room (see storeLayout above).
+ *                Shown as "Wall A › Cupboard 2 › Shelf 3" above the medicine name; the route map lights that cupboard and
+ *                runs the order's picking track through it (first medicine's cupboard → … → last one's, in list order).
  *  image         pack photo path (public/images/medicines/<id>.webp (background removed), see SOURCES.md there). Empty → the sample illustration for `form` is shown instead.
  */
 export const medicines = [
@@ -39,6 +85,7 @@ export const medicines = [
     quantity: 1,
     dosage: "1 tablet every 6 hours after food",
     manufacturer: "Sun Pharma",
+    location: { wall: "A", cupboard: 1, shelf: 1 },
     image: "/images/medicines/MED001.webp",
   },
   {
@@ -50,6 +97,7 @@ export const medicines = [
     quantity: 2,
     dosage: "1 capsule once a week with milk",
     manufacturer: "Cipla",
+    location: { wall: "C", cupboard: 2, shelf: 3 },
     image: "/images/medicines/MED002.webp",
   },
   {
@@ -61,6 +109,7 @@ export const medicines = [
     quantity: 1,
     dosage: "1 capsule three times a day for 5 days",
     manufacturer: "Alkem",
+    location: { wall: "B", cupboard: 1, shelf: 2 },
     image: "/images/medicines/MED003.webp",
   },
   {
@@ -72,6 +121,7 @@ export const medicines = [
     quantity: 1,
     dosage: "1 tablet at night",
     manufacturer: "Dr. Reddy's",
+    location: { wall: "A", cupboard: 2, shelf: 3 },
     image: "/images/medicines/MED004.webp",
   },
   {
@@ -83,23 +133,24 @@ export const medicines = [
     quantity: 1,
     dosage: "10 ml three times a day",
     manufacturer: "Abbott",
+    location: { wall: "B", cupboard: 4, shelf: 1 },
     image: "/images/medicines/MED005.webp",
   },
-  { id: "MED006", barcode: "896", name: "Azithromycin 500mg", form: "tablet", pack: "Strip of 3 tablets", quantity: 1, dosage: "1 tablet once a day for 3 days", manufacturer: "Zydus", image: "/images/medicines/MED006.webp" },
-  { id: "MED007", barcode: "897", name: "Metformin 500mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 2, dosage: "1 tablet twice a day after food", manufacturer: "USV", image: "/images/medicines/MED007.webp" },
-  { id: "MED008", barcode: "898", name: "Atorvastatin 10mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at bedtime", manufacturer: "Ranbaxy", image: "/images/medicines/MED008.webp" },
-  { id: "MED009", barcode: "899", name: "Pantoprazole 40mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet before breakfast", manufacturer: "Alkem", image: "/images/medicines/MED009.webp" },
-  { id: "MED010", barcode: "900", name: "Amlodipine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet every morning", manufacturer: "Cipla", image: "/images/medicines/MED010.webp" },
-  { id: "MED011", barcode: "901", name: "Ibuprofen 400mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet after food when needed", manufacturer: "Abbott", image: "/images/medicines/MED011.webp" },
-  { id: "MED012", barcode: "902", name: "Omeprazole 20mg", form: "capsule", pack: "Strip of 10 capsules", quantity: 1, dosage: "1 capsule before breakfast", manufacturer: "Dr. Reddy's", image: "/images/medicines/MED012.webp" },
-  { id: "MED013", barcode: "903", name: "Levocetirizine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at night", manufacturer: "Sun Pharma", image: "/images/medicines/MED013.webp" },
-  { id: "MED014", barcode: "904", name: "ORS Sachets", form: "other", pack: "Box of 10 sachets", quantity: 1, dosage: "Dissolve 1 sachet in 1 litre of water", manufacturer: "FDC", image: "/images/medicines/MED014.webp" },
-  { id: "MED015", barcode: "905", name: "Saline Nasal Drops", form: "drops", pack: "10 ml bottle", quantity: 1, dosage: "2 drops in each nostril three times a day", manufacturer: "Cipla", image: "/images/medicines/MED015.webp" },
-  { id: "MED016", barcode: "906", name: "Salbutamol Inhaler", form: "inhaler", pack: "200 doses", quantity: 1, dosage: "2 puffs when breathless", manufacturer: "Cipla", image: "/images/medicines/MED016.webp" },
-  { id: "MED017", barcode: "907", name: "Clotrimazole Cream 1%", form: "cream", pack: "20 g tube", quantity: 1, dosage: "Apply thinly twice a day", manufacturer: "Glenmark", image: "/images/medicines/MED017.webp" },
-  { id: "MED018", barcode: "908", name: "Insulin Glargine", form: "injection", pack: "3 ml pen", quantity: 1, dosage: "10 units at bedtime as advised", manufacturer: "Sanofi", image: "/images/medicines/MED018.webp" },
-  { id: "MED019", barcode: "909", name: "Multivitamin Syrup", form: "syrup", pack: "200 ml bottle", quantity: 1, dosage: "10 ml once a day", manufacturer: "Pfizer", image: "/images/medicines/MED019.webp" },
-  { id: "MED020", barcode: "910", name: "Calcium + Vitamin D3", form: "tablet", pack: "Strip of 15 tablets", quantity: 1, dosage: "1 tablet after lunch", manufacturer: "Abbott", image: "/images/medicines/MED020.webp" },
+  { id: "MED006", barcode: "896", name: "Azithromycin 500mg", form: "tablet", pack: "Strip of 3 tablets", quantity: 1, dosage: "1 tablet once a day for 3 days", manufacturer: "Zydus", location: { wall: "B", cupboard: 1, shelf: 4 }, image: "/images/medicines/MED006.webp" },
+  { id: "MED007", barcode: "897", name: "Metformin 500mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 2, dosage: "1 tablet twice a day after food", manufacturer: "USV", location: { wall: "A", cupboard: 3, shelf: 2 }, image: "/images/medicines/MED007.webp" },
+  { id: "MED008", barcode: "898", name: "Atorvastatin 10mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at bedtime", manufacturer: "Ranbaxy", location: { wall: "A", cupboard: 3, shelf: 3 }, image: "/images/medicines/MED008.webp" },
+  { id: "MED009", barcode: "899", name: "Pantoprazole 40mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet before breakfast", manufacturer: "Alkem", location: { wall: "B", cupboard: 2, shelf: 1 }, image: "/images/medicines/MED009.webp" },
+  { id: "MED010", barcode: "900", name: "Amlodipine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet every morning", manufacturer: "Cipla", location: { wall: "A", cupboard: 3, shelf: 4 }, image: "/images/medicines/MED010.webp" },
+  { id: "MED011", barcode: "901", name: "Ibuprofen 400mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet after food when needed", manufacturer: "Abbott", location: { wall: "A", cupboard: 1, shelf: 2 }, image: "/images/medicines/MED011.webp" },
+  { id: "MED012", barcode: "902", name: "Omeprazole 20mg", form: "capsule", pack: "Strip of 10 capsules", quantity: 1, dosage: "1 capsule before breakfast", manufacturer: "Dr. Reddy's", location: { wall: "B", cupboard: 2, shelf: 3 }, image: "/images/medicines/MED012.webp" },
+  { id: "MED013", barcode: "903", name: "Levocetirizine 5mg", form: "tablet", pack: "Strip of 10 tablets", quantity: 1, dosage: "1 tablet at night", manufacturer: "Sun Pharma", location: { wall: "A", cupboard: 2, shelf: 4 }, image: "/images/medicines/MED013.webp" },
+  { id: "MED014", barcode: "904", name: "ORS Sachets", form: "other", pack: "Box of 10 sachets", quantity: 1, dosage: "Dissolve 1 sachet in 1 litre of water", manufacturer: "FDC", location: { wall: "C", cupboard: 3, shelf: 1 }, image: "/images/medicines/MED014.webp" },
+  { id: "MED015", barcode: "905", name: "Saline Nasal Drops", form: "drops", pack: "10 ml bottle", quantity: 1, dosage: "2 drops in each nostril three times a day", manufacturer: "Cipla", location: { wall: "C", cupboard: 1, shelf: 2 }, image: "/images/medicines/MED015.webp" },
+  { id: "MED016", barcode: "906", name: "Salbutamol Inhaler", form: "inhaler", pack: "200 doses", quantity: 1, dosage: "2 puffs when breathless", manufacturer: "Cipla", location: { wall: "C", cupboard: 1, shelf: 4 }, image: "/images/medicines/MED016.webp" },
+  { id: "MED017", barcode: "907", name: "Clotrimazole Cream 1%", form: "cream", pack: "20 g tube", quantity: 1, dosage: "Apply thinly twice a day", manufacturer: "Glenmark", location: { wall: "C", cupboard: 3, shelf: 3 }, image: "/images/medicines/MED017.webp" },
+  { id: "MED018", barcode: "908", name: "Insulin Glargine", form: "injection", pack: "3 ml pen", quantity: 1, dosage: "10 units at bedtime as advised", manufacturer: "Sanofi", location: { wall: "B", cupboard: 3, shelf: 2 }, image: "/images/medicines/MED018.webp" },
+  { id: "MED019", barcode: "909", name: "Multivitamin Syrup", form: "syrup", pack: "200 ml bottle", quantity: 1, dosage: "10 ml once a day", manufacturer: "Pfizer", location: { wall: "B", cupboard: 4, shelf: 3 }, image: "/images/medicines/MED019.webp" },
+  { id: "MED020", barcode: "910", name: "Calcium + Vitamin D3", form: "tablet", pack: "Strip of 15 tablets", quantity: 1, dosage: "1 tablet after lunch", manufacturer: "Abbott", location: { wall: "C", cupboard: 2, shelf: 1 }, image: "/images/medicines/MED020.webp" },
 ];
 
 /**
@@ -110,6 +161,8 @@ export const medicines = [
  *
  *  barcode    what the main scanner emits for this order
  *  reference  human readable order number shown in the header
+ *  teamColor  picking team / trolley of this order — a key of `teamColors` above (red | yellow | green | violet | orange | blue).
+ *             The kiosk background takes this colour while the order is open. Leave it out for no team colour.
  *  patient    details shown in the "Patient" card on the scanning screen — every field is optional:
  *               name, age, gender, patientId, phone, doctor
  *  items      [{ medicineId, quantity? }] — quantity overrides the catalogue default
@@ -118,6 +171,7 @@ export const orders = [
   {
     barcode: "111001",
     reference: "ORD-1001",
+    teamColor: "red",
     patient: {
       name: "Kumar",
       age: 46,
@@ -137,6 +191,7 @@ export const orders = [
   {
     barcode: "111002",
     reference: "ORD-1002",
+    teamColor: "yellow",
     patient: {
       name: "Priya Sharma",
       age: 32,
@@ -153,6 +208,7 @@ export const orders = [
   {
     barcode: "111003",
     reference: "ORD-1003",
+    teamColor: "green",
     patient: {
       name: "Arun Prakash",
       age: 58,
@@ -165,6 +221,64 @@ export const orders = [
       { medicineId: "MED003", quantity: 2 },
       { medicineId: "MED001", quantity: 1 },
       { medicineId: "MED002", quantity: 1 },
+    ],
+  },
+  {
+    barcode: "111004",
+    reference: "ORD-1004",
+    teamColor: "violet",
+    patient: {
+      name: "Meena Rajan",
+      age: 29,
+      gender: "Female",
+      patientId: "PT-20548",
+      phone: "99400 77812",
+      doctor: "Dr. A. Balaji",
+    },
+    items: [
+      { medicineId: "MED006", quantity: 1 },
+      { medicineId: "MED009", quantity: 1 },
+      { medicineId: "MED011", quantity: 2 },
+      { medicineId: "MED014", quantity: 1 },
+    ],
+  },
+  {
+    barcode: "111005",
+    reference: "ORD-1005",
+    teamColor: "orange",
+    patient: {
+      name: "Suresh Babu",
+      age: 51,
+      gender: "Male",
+      patientId: "PT-20561",
+      phone: "98410 66054",
+      doctor: "Dr. P. Anitha",
+    },
+    items: [
+      { medicineId: "MED007", quantity: 2 },
+      { medicineId: "MED008", quantity: 1 },
+      { medicineId: "MED010", quantity: 1 },
+      { medicineId: "MED020", quantity: 1 },
+    ],
+  },
+  {
+    barcode: "111006",
+    reference: "ORD-1006",
+    teamColor: "blue",
+    patient: {
+      name: "Fathima Begum",
+      age: 37,
+      gender: "Female",
+      patientId: "PT-20579",
+      phone: "96000 41198",
+      doctor: "Dr. J. Thomas",
+    },
+    items: [
+      { medicineId: "MED012", quantity: 1 },
+      { medicineId: "MED013", quantity: 1 },
+      { medicineId: "MED015", quantity: 1 },
+      { medicineId: "MED016", quantity: 1 },
+      { medicineId: "MED017", quantity: 1 },
     ],
   },
   {
@@ -214,6 +328,18 @@ export const kioskConfig = {
     idleTimeoutMs: 0,       // no touch/scan for this long during an order → back to the order-scan screen (0 = never; auto-return switched off)
   },
   confirmOrderStart: true,  // after the order barcode is scanned, show "Order found — START?" before the collection screen
+
+  /**
+   * SCREEN LAYOUT. "portrait" = the 12" tablet standing upright (one column: big current-medicine card over the
+   * list, ring · scanner · route map at the bottom). "landscape" = the tablet on its side / any wide screen: the
+   * same content in two compact columns (current medicine + list on the left — only the list scrolls — ring and
+   * scanner over the route map on the right). The Portrait | Landscape toggle on the order-scan page switches it
+   * and the choice is remembered on the device; `default` is used until it is tapped. `toggle: false` hides it.
+   */
+  layout: {
+    default: "portrait",
+    toggle: true,
+  },
   hideCursor: false,        // set true on the Raspberry Pi kiosk to hide the mouse pointer
   backgroundMotion: true,   // subtle floating pharmacy shapes on the order-scan/completion screens (set false for weakest hardware)
 

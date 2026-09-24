@@ -1,3 +1,5 @@
+const plugin = require('tailwindcss/plugin');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -41,33 +43,30 @@ module.exports = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
 
-        // Custom Project Specific Colors (see stack.md)
-        "ot-bg-top": "#010a25",
-        "ot-bg-mid": "#021e3b",
-        "ot-bg-bottom": "#01112c",
-        "ot-surface-top": "#203250",
-        "ot-surface-bottom": "#03132e",
-        "ot-surface-elev-top": "#234f7d",
-        "ot-surface-elev-bottom": "#0e2e54",
-        "ot-action": "#5fa6ff",
-        "ot-action-hover": "#74b3ff",
-        "ot-btn-secondary-top": "#425679",
-        "ot-btn-secondary-bottom": "#03132e",
-        "ot-border": "rgba(139, 175, 229, 0.35)",
-        "ot-text-muted": "#a7bedf",
+        // Custom Project Specific Colors (see stack.md). Every token is an "r g b" CSS variable (defaults in
+        // index.css :root) so that the kiosk can re-tint EVERYTHING — backgrounds, surfaces, accent text, borders,
+        // buttons — in the active order's team colour (KioskPage sets them from data.js `teamColors`).
+        "ot-bg-top": "rgb(var(--ot-bg-top) / <alpha-value>)",
+        "ot-bg-mid": "rgb(var(--ot-bg-mid) / <alpha-value>)",
+        "ot-bg-bottom": "rgb(var(--ot-bg-bottom) / <alpha-value>)",
+        "ot-surface-top": "rgb(var(--ot-surface-top) / <alpha-value>)",
+        "ot-surface-bottom": "rgb(var(--ot-surface-bottom) / <alpha-value>)",
+        "ot-surface-elev-top": "rgb(var(--ot-surface-elev-top) / <alpha-value>)",
+        "ot-surface-elev-bottom": "rgb(var(--ot-surface-elev-bottom) / <alpha-value>)",
+        "ot-action": "rgb(var(--ot-action) / <alpha-value>)",             // accent: text, icons, borders, badges
+        "ot-action-fill": "rgb(var(--ot-action-fill) / <alpha-value>)",   // solid buttons, brand tile, progress bar …
+        "ot-action-fg": "rgb(var(--ot-action-fg) / <alpha-value>)",       // … and the text on them
+        "ot-action-hover": "rgb(var(--ot-action-hover) / <alpha-value>)", // solid buttons, hovered / pressed
+        "ot-btn-secondary-top": "rgb(var(--ot-btn-secondary-top) / <alpha-value>)",
+        "ot-btn-secondary-bottom": "rgb(var(--ot-btn-secondary-bottom) / <alpha-value>)",
+        "ot-border": "rgb(var(--ot-border) / <alpha-value>)",             // always with an alpha: `border-ot-border/35` is the standard border
+        "ot-text-muted": "rgb(var(--ot-text-muted) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["Bai Jamjuree"],
       },
       borderRadius: {
         DEFAULT: "0.75rem",
-      },
-      screens: {
-        // Kiosk helpers: the 10" panel is 1024x600 (landscape, short height),
-        // the 12" portrait panel is 1200x1920 (extra tall, scaled-up root font)
-        "h-short": { raw: "(max-height: 640px)" },
-        "h-tall": { raw: "(min-height: 641px)" },
-        "h-xtall": { raw: "(min-height: 1500px)" },
       },
       keyframes: {
         "pulse-ring": {
@@ -91,5 +90,21 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Kiosk panel variants. The 10" panel is 1024×600 (landscape, short height), the 12" tablet is 1200×1920
+    // (portrait, extra tall, scaled-up root font — see index.css). `h-short` = the compact TWO-COLUMN layout,
+    // `h-tall` / `h-xtall` = the roomier sizes of the taller screens.
+    // LAYOUT MODE: the Portrait | Landscape toggle on the order-scan page puts `data-layout` on <html>
+    // (src/lib/layoutMode.js). "landscape" switches the compact two-column layout on for ANY panel height
+    // (h-short) and the extra-tall portrait sizes off (h-xtall); h-tall still follows the real height.
+    // "portrait" = the media queries alone, exactly as before.
+    // Precedence is by specificity (plugin variants are emitted BEFORE `md:` etc., so order cannot do it):
+    // `&&` doubles the class → every h-* utility (0,2,0) beats `md:` (0,1,0); the html[data-layout] prefix adds
+    // (0,1,1) more, so in the landscape mode h-short beats h-tall and h-xtall beats h-tall on the tall tablet.
+    plugin(({ addVariant }) => {
+      addVariant("h-tall", "@media (min-height: 641px) { && }");
+      addVariant("h-xtall", '@media (min-height: 1500px) { html:not([data-layout="landscape"]) && }');
+      addVariant("h-short", ["@media (max-height: 640px) { && }", 'html[data-layout="landscape"] &&']);
+    }),
+  ],
 }

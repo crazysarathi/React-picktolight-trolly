@@ -18,8 +18,8 @@ function BackgroundDecor({ enabled = true }) {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
       {/* soft static glows (radial gradients — no filter blur, cheap to composite) */}
-      <div className="absolute -top-40 -left-40 w-[34rem] h-[34rem] rounded-full bg-[radial-gradient(circle,rgba(95,166,255,0.16),transparent_65%)]" />
-      <div className="absolute -bottom-48 -right-32 w-[36rem] h-[36rem] rounded-full bg-[radial-gradient(circle,rgba(35,79,125,0.45),transparent_65%)]" />
+      <div className="absolute -top-40 -left-40 w-[34rem] h-[34rem] rounded-full bg-[radial-gradient(circle,rgb(var(--ot-action)/0.16),transparent_65%)]" />
+      <div className="absolute -bottom-48 -right-32 w-[36rem] h-[36rem] rounded-full bg-[radial-gradient(circle,rgb(var(--ot-surface-elev-top)/0.45),transparent_65%)]" />
       {enabled &&
         SHAPES.map(({ Icon, left, top, size, duration, delay }, i) => (
           <Icon

@@ -16,6 +16,8 @@ import {
   workflowReducer,
 } from '../src/lib/workflow.js';
 import { findOrderByBarcode, resolveOrder, resolvePatient, getKnownBarcodes } from '../src/lib/orders.js';
+import { hexToRgb, mix, luminance, rgbToHsl, teamThemeVars } from '../src/lib/teamTheme.js';
+import { normalizeLayout, resolveLocation, locationSegments, formatLocation } from '../src/lib/locations.js';
 
 const catalogue = [
   { id: 'A', barcode: '891', name: 'Paracetamol 500mg', quantity: 1 },
@@ -26,6 +28,7 @@ const orders = [
   {
     barcode: '111001',
     reference: 'ORD-1001',
+    teamColor: ' Red ',
     patient: { name: 'Kumar', age: 46, gender: 'Male', patientId: 'PT-1', phone: '98400 12345', doctor: 'Dr. N' },
     items: [{ medicineId: 'A' }, { medicineId: 'B', quantity: 3 }, { medicineId: 'C' }],
   },
@@ -57,6 +60,8 @@ test('findOrderByBarcode resolves catalogue medicines, quantity overrides and pa
   assert.equal(o.medicines[1].quantity, 3);
   assert.equal(o.medicines[1].name, 'Vitamin D3');
   assert.deepEqual(o.patient, { name: 'Kumar', age: 46, gender: 'Male', patientId: 'PT-1', phone: '98400 12345', doctor: 'Dr. N' });
+  assert.equal(o.teamColor, 'red'); // trimmed + lower-cased palette key
+  assert.equal(resolveOrder(orders[1], catalogue).teamColor, null); // no teamColor → null
   assert.equal(findOrderByBarcode('119999', { orders, medicines: catalogue }), null);
   assert.equal(findOrderByBarcode('', { orders, medicines: catalogue }), null);
 });
@@ -93,6 +98,7 @@ test('kiosk opens on order-scan → START_ORDER → scanning with every medicine
   assert.equal(s.phase, PHASES.SCANNING);
   assert.equal(s.order.reference, 'ORD-1001');
   assert.equal(s.order.patient.name, 'Kumar');
+  assert.equal(s.order.teamColor, 'red');
   assert.deepEqual(s.collectedIds, []);
   assert.equal(s.lastCollectedId, null);
   for (const m of meds) assert.equal(getMedicineStatus(s, m), MEDICINE_STATUS.PENDING);
@@ -303,6 +309,7 @@ test('ORDER_FOUND → order-confirm with the order loaded but nothing collected;
   assert.equal(s.order.reference, 'ORD-1001');
   assert.equal(s.medicines.length, 3);
   assert.equal(s.foundAt, 7);
+  assert.equal(s.order.teamColor, 'red');
   assert.deepEqual(s.collectedIds, []);
   s = r(s, { type: 'CONFIRM_ORDER', at: 9 });
   assert.equal(s.phase, PHASES.SCANNING);
@@ -341,6 +348,93 @@ test('confirmed order runs to completion like a direct start', () => {
   assert.equal(isOrderCollected(s), true);
   s = r(s, { type: 'FINISH_ORDER', at: 2 });
   assert.equal(s.phase, PHASES.COMPLETE);
+});
+
+console.log('team theme');
+
+test('teamThemeVars derives every theme variable from the team\'s from/to colours', () => {
+  const vars = teamThemeVars({ key: 'red', from: '#dc2626', to: '#7f1d1d' });
+  const rgbKeys = [
+    '--ot-bg-top', '--ot-bg-mid', '--ot-bg-bottom', '--ot-surface-top', '--ot-surface-bottom',
+    '--ot-surface-elev-top', '--ot-surface-elev-bottom', '--ot-btn-secondary-top', '--ot-btn-secondary-bottom', '--ot-text-muted',
+    '--ot-action', '--ot-action-fill', '--ot-action-fg', '--ot-action-hover', '--ot-border',
+  ];
+  assert.deepEqual(Object.keys(vars), [...rgbKeys, '--ring', '--background']);
+  for (const k of rgbKeys) assert.match(vars[k], /^\d{1,3} \d{1,3} \d{1,3}$/, k);
+  for (const k of ['--ring', '--background']) assert.match(vars[k], /^\d{1,3} \d{1,3}% \d{1,3}%$/, k);
+  const lum = (s) => s.split(' ').reduce((a, b) => a + Number(b), 0);
+  assert.ok(lum(vars['--ot-surface-top']) < lum('127 29 29'), 'cards are darker than the page colour');
+  assert.ok(lum(vars['--ot-text-muted']) > lum('220 38 38'), 'muted text is a pale tint of the team colour');
+  assert.ok(lum(vars['--ot-action']) > lum('220 38 38'), 'accent text is a light tint of the team colour');
+  assert.equal(vars['--ot-action-fill'], '220 38 38', 'solid buttons use the vivid team colour');
+  assert.equal(vars['--ot-action-fg'], '255 255 255', 'red buttons get white text');
+  const yellow = teamThemeVars({ key: 'yellow', from: '#facc15', to: '#a16207' });
+  assert.notEqual(yellow['--ot-action-fg'], '255 255 255', 'yellow buttons get dark text');
+  assert.ok(luminance(hexToRgb('#facc15')) > luminance(hexToRgb('#dc2626')));
+  assert.equal(luminance([255, 255, 255]), 1);
+  assert.equal(rgbToHsl([255, 0, 0]), '0 100% 50%');
+  assert.equal(rgbToHsl([0, 0, 0]), '0 0% 0%');
+  assert.deepEqual(hexToRgb('#7f1d1d'), [127, 29, 29]);
+  assert.deepEqual(hexToRgb('#abc'), [170, 187, 204]);
+  assert.equal(hexToRgb('red'), null);
+  assert.deepEqual(mix([100, 100, 100], [0, 0, 0], 0.5), [50, 50, 50]);
+  assert.equal(teamThemeVars({ from: 'red', to: '#000' }), null); // invalid colour → default theme
+  assert.equal(teamThemeVars(null), null);
+});
+
+console.log('medicine locations (route map)');
+
+const layout = {
+  entranceLabel: ' Entrance ',
+  walls: [
+    { id: 'a', label: 'Wall A', side: 'left', cupboards: 3, shelves: 4 },
+    { id: 'B', side: 'back', cupboards: 4, shelves: 5 },
+    { id: 'C', label: 'Wall C', side: 'right', cupboards: 3, shelves: 4 },
+  ],
+};
+
+test('normalizeLayout trims / upper-cases wall ids, fills labels, sides and counts, drops duplicates', () => {
+  const l = normalizeLayout(layout);
+  assert.equal(l.entranceLabel, 'Entrance');
+  assert.deepEqual(l.walls.map((w) => w.id), ['A', 'B', 'C']);
+  assert.equal(l.walls[1].label, 'Wall B');
+  assert.deepEqual(l.walls.map((w) => w.side), ['left', 'back', 'right']);
+  const loose = normalizeLayout({ walls: [{ id: 'x' }, { id: 'x' }, { id: 'y', side: 'top', cupboards: '2', shelves: 0 }] });
+  assert.deepEqual(loose.walls.map((w) => [w.id, w.side, w.cupboards, w.shelves]), [['X', 'left', 1, 1], ['Y', 'back', 2, 1]]);
+  assert.equal(loose.entranceLabel, 'Entrance');
+  assert.deepEqual(normalizeLayout(null).walls, []);
+});
+
+test('resolveLocation maps a medicine onto its wall / cupboard / shelf and says whether the map can light it', () => {
+  const loc = resolveLocation({ location: { wall: 'a', cupboard: 2, shelf: 3 } }, layout);
+  assert.deepEqual(loc, { wallId: 'A', wallLabel: 'Wall A', side: 'left', cupboard: 2, shelf: 3, key: 'A2', onMap: true });
+  assert.equal(resolveLocation({ location: { wall: 'B', cupboard: 4, shelf: 1 } }, layout).side, 'back');
+  // unknown wall / cupboard out of range: text still available, nothing to light
+  const off = resolveLocation({ location: { wall: 'Z', cupboard: 1, shelf: 1 } }, layout);
+  assert.equal(off.onMap, false);
+  assert.equal(off.wallLabel, 'Wall Z');
+  assert.equal(off.side, null);
+  assert.equal(resolveLocation({ location: { wall: 'A', cupboard: 9, shelf: 1 } }, layout).onMap, false);
+  assert.equal(resolveLocation({ location: { wall: 'A', cupboard: '2', shelf: '1' } }, layout).key, 'A2'); // numeric strings accepted
+  // no / empty location
+  assert.equal(resolveLocation({ name: 'x' }, layout), null);
+  assert.equal(resolveLocation({ location: {} }, layout), null);
+  assert.equal(resolveLocation(null, layout), null);
+});
+
+test('order lines keep the catalogue location; strip segments + text formatting', () => {
+  const cat = [{ id: 'A', barcode: '891', name: 'P', location: { wall: 'C', cupboard: 1, shelf: 4 } }];
+  const line = resolveOrder({ barcode: '111009', items: [{ medicineId: 'A' }] }, cat).medicines[0];
+  const loc = resolveLocation(line, layout);
+  assert.deepEqual(locationSegments(loc), [
+    { label: 'Wall', value: 'C' },
+    { label: 'Cupboard', value: 1 },
+    { label: 'Shelf', value: 4 },
+  ]);
+  assert.equal(formatLocation(loc), 'Wall C · Cupboard 1 · Shelf 4');
+  assert.deepEqual(locationSegments(resolveLocation({ location: { wall: 'B' } }, layout)), [{ label: 'Wall', value: 'B' }]);
+  assert.deepEqual(locationSegments(null), []);
+  assert.equal(formatLocation(null), '');
 });
 
 console.log(`\n${passed} tests passed`);

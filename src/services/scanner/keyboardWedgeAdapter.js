@@ -44,6 +44,7 @@ export function createKeyboardWedgeAdapter(options = {}) {
     const value = buffer;
     reset();
     if (service && value.length >= config.minLength) {
+      console.log('[scanner] keyboard-wedge input:', value);
       service.emit(value, { source: 'keyboard-wedge', raw: value });
     }
   };

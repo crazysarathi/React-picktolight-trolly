@@ -32,6 +32,7 @@ export function useCollectionWorkflow({ orders, medicines, config, scanEnabled =
       (scan) => {
         const phase = stateRef.current.phase;
         if (phase === PHASES.ORDER_SCAN || phase === PHASES.ORDER_CONFIRM) {
+          console.log('[order-scan] scanned data:', scan.barcode, '(source:', scan.source + ')');
           const code = String(scan.barcode ?? '').trim().replace(/\s+/g, '');
           if (!code.startsWith('11')) {
             dispatch({ type: 'INVALID_PRESCRIPTION_PREFIX', barcode: scan.barcode, at: scan.timestamp, source: scan.source });

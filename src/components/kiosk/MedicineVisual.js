@@ -25,7 +25,7 @@ export default function MedicineVisual({ medicine, className }) {
     <div
       className={cn(
         'flex items-center justify-center overflow-hidden',
-        !photo && 'rounded-2xl border border-ot-border bg-gradient-to-b from-ot-surface-elev-top to-ot-surface-elev-bottom text-ot-action',
+        !photo && 'rounded-2xl border border-ot-border/35 bg-gradient-to-b from-ot-surface-elev-top to-ot-surface-elev-bottom text-ot-action',
         className
       )}
     >

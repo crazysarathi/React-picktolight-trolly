@@ -5,7 +5,7 @@ import { normalizeBarcode } from './workflow.js';
  * Pure function over data.js structures — swap it for an API call later without touching the UI.
  *
  * Returns null when the barcode is not a known order, otherwise
- *   { barcode, reference, patient, medicines: [ { ...catalogueMedicine, id (unique per line), quantity } ] }
+ *   { barcode, reference, patient, teamColor, medicines: [ { ...catalogueMedicine, id (unique per line), quantity } ] }
  */
 export function findOrderByBarcode(rawBarcode, { orders = [], medicines = [] } = {}) {
   const code = normalizeBarcode(rawBarcode);
@@ -27,6 +27,12 @@ export function resolvePatient(order = {}) {
     doctor: String(raw.doctor ?? '').trim(),
   };
   return Object.values(patient).some((v) => v !== '' && v !== null && v !== undefined) ? patient : null;
+}
+
+/** `teamColor` of an order as a `teamColors` key (trimmed, lower-case) — null when the order has none. */
+export function resolveTeamColor(order = {}) {
+  const key = String(order.teamColor ?? '').trim().toLowerCase();
+  return key || null;
 }
 
 export function resolveOrder(order, catalogue = []) {
@@ -56,6 +62,7 @@ export function resolveOrder(order, catalogue = []) {
     barcode: String(order.barcode),
     reference: order.reference || String(order.barcode),
     patient: resolvePatient(order),
+    teamColor: resolveTeamColor(order),
     medicines: resolved,
   };
 }

@@ -35,7 +35,7 @@ export default function TestBarcodeInput({ size = 'md', placeholder = 'Type barc
         autoComplete="off"
         aria-label="Barcode to simulate"
         className={cn(
-          'border border-ot-border bg-ot-surface-bottom/70 text-white placeholder:text-ot-text-muted/60 focus:outline-none focus:ring-2 focus:ring-ring',
+          'border border-ot-border/35 bg-ot-surface-bottom/70 text-white placeholder:text-ot-text-muted/60 focus:outline-none focus:ring-2 focus:ring-ring',
           s.input,
           inputClassName
         )}

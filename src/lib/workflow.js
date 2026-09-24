@@ -8,7 +8,7 @@
  *
  * State shape:
  *   phase            order-scan | order-confirm | scanning | complete
- *   order            { barcode, reference, patient } of the active order (null before a main barcode is scanned)
+ *   order            { barcode, reference, patient, teamColor } of the active order (null before a main barcode is scanned)
  *   medicines        list to collect for the current order (display order only — scan them in any sequence)
  *   collectedIds     ids already collected
  *   lastCollectedId  id of the most recently collected line (null until the first scan)
@@ -69,6 +69,7 @@ const orderPayload = (action) => ({
         barcode: action.order.barcode,
         reference: action.order.reference,
         patient: action.order.patient ?? null,
+        teamColor: action.order.teamColor ?? null,
       }
     : null,
 });

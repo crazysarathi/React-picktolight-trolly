@@ -5,14 +5,25 @@ import BackgroundDecor from 'components/kiosk/BackgroundDecor';
 import PharmacyBrand from 'components/kiosk/PharmacyBrand';
 import ScanArea from 'components/kiosk/ScanArea';
 import TestBarcodeInput from 'components/kiosk/TestBarcodeInput';
+import LayoutToggle from 'components/kiosk/LayoutToggle';
 import { screenVariants, fadeUp } from 'components/kiosk/motion';
 
 /**
  * First screen when the kiosk opens: the customer scans the MAIN barcode (order slip / prescription).
  * The matching order's medicines are then listed on the scanning screen.
  * While the test scanner is enabled, a barcode input box is shown for testing.
+ * Top-right: the Portrait | Landscape toggle (`layoutMode` / `onLayoutModeChange`, hidden without the handler) that
+ * picks the screen layout of the whole kiosk — see src/lib/layoutMode.js.
  */
-export default function OrderScanScreen({ pharmacy, orders = [], showTestInput = false, backgroundMotion = true, feedbackActive = false }) {
+export default function OrderScanScreen({
+  pharmacy,
+  orders = [],
+  showTestInput = false,
+  backgroundMotion = true,
+  feedbackActive = false,
+  layoutMode = 'portrait',
+  onLayoutModeChange,
+}) {
   return (
     <motion.section
       className="kiosk-screen overflow-y-auto overflow-x-hidden"
@@ -22,6 +33,12 @@ export default function OrderScanScreen({ pharmacy, orders = [], showTestInput =
       exit="exit"
     >
       <BackgroundDecor enabled={backgroundMotion} />
+
+      {onLayoutModeChange && (
+        <motion.div {...fadeUp(0.35)} className="absolute right-3 top-3 z-20 md:right-4 md:top-4">
+          <LayoutToggle value={layoutMode} onChange={onLayoutModeChange} />
+        </motion.div>
+      )}
 
       <div className="relative z-10 m-auto flex w-full max-w-3xl flex-col items-center px-6 py-4 text-center">
         <motion.div {...fadeUp(0.05)} className="mb-3 md:mb-4">

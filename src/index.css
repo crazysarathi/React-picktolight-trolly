@@ -36,6 +36,25 @@
 
     --radius: 0.75rem;
 
+    /* Kiosk navy theme as "r g b" channels (tailwind.config.js wraps them in rgb(… / alpha)).
+       While an order with a team colour is open, KioskPage overrides these on .kiosk-root so EVERYTHING —
+       backgrounds, cards, accent text, borders, buttons, focus ring — is re-tinted (see src/lib/teamTheme.js). */
+    --ot-bg-top: 1 10 37;               /* #010a25 */
+    --ot-bg-mid: 2 30 59;               /* #021e3b */
+    --ot-bg-bottom: 1 17 44;            /* #01112c */
+    --ot-surface-top: 32 50 80;         /* #203250 */
+    --ot-surface-bottom: 3 19 46;       /* #03132e */
+    --ot-surface-elev-top: 35 79 125;   /* #234f7d */
+    --ot-surface-elev-bottom: 14 46 84; /* #0e2e54 */
+    --ot-btn-secondary-top: 66 86 121;  /* #425679 */
+    --ot-btn-secondary-bottom: 3 19 46; /* #03132e */
+    --ot-text-muted: 167 190 223;       /* #a7bedf */
+    --ot-action: 95 166 255;            /* #5fa6ff  accent: text, icons, borders, badges */
+    --ot-action-fill: 95 166 255;       /* #5fa6ff  solid buttons, brand tile, progress bar */
+    --ot-action-fg: 255 255 255;        /*          text on solid buttons */
+    --ot-action-hover: 116 179 255;     /* #74b3ff  solid buttons, hovered / pressed */
+    --ot-border: 139 175 229;           /* rgba(139,175,229,.35) = `border-ot-border/35` */
+
     color-scheme: dark;
   }
 
@@ -55,6 +74,14 @@
      font-size scales text, icons, paddings and gaps together for readable arm's-length use. */
   @media (min-width: 1100px) and (min-height: 1500px) {
     html {
+      font-size: 20px;
+    }
+  }
+
+  /* The same tablet on its side (1920×1200) in the LANDSCAPE layout (data-layout, see src/lib/layoutMode.js):
+     keep the arm's-length root size — the compact two-column layout is what makes everything smaller. */
+  @media (min-width: 1800px) and (min-height: 1100px) {
+    html[data-layout="landscape"] {
       font-size: 20px;
     }
   }
@@ -100,7 +127,7 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(139, 175, 229, 0.45) transparent;
+    scrollbar-color: rgb(var(--ot-border) / 0.45) transparent;
   }
 
   *::-webkit-scrollbar {
@@ -113,12 +140,12 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: rgba(139, 175, 229, 0.45);
+    background-color: rgb(var(--ot-border) / 0.45);
     border-radius: 999px;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(139, 175, 229, 0.7);
+    background-color: rgb(var(--ot-border) / 0.7);
   }
 }
 
@@ -168,9 +195,9 @@
     background: linear-gradient(to bottom,
         transparent 0%,
         transparent 62%,
-        rgba(95, 166, 255, 0.06) 84%,
-        rgba(95, 166, 255, 0.32) 97%,
-        #8cc4ff 100%);
+        rgb(var(--ot-action) / 0.06) 84%,
+        rgb(var(--ot-action) / 0.32) 97%,
+        rgb(var(--ot-action-hover)) 100%);
     animation: kiosk-scan-sweep 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
     will-change: transform, opacity;
     pointer-events: none;
@@ -184,7 +211,7 @@
     position: absolute;
     width: 28px;
     height: 28px;
-    border-color: #5fa6ff;
+    border-color: rgb(var(--ot-action));
     border-style: solid;
     border-width: 0;
     border-radius: 2px;
@@ -194,10 +221,22 @@
   .scan-corner.tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-top-right-radius: 10px; }
   .scan-corner.bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-bottom-left-radius: 10px; }
   .scan-corner.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-bottom-right-radius: 10px; }
+
+  /* Route map: the dashed line "flows" from the entrance towards the lit cupboard (stroke-dashoffset only,
+     one full dash period = 7 + 9 = 16 units, so -32 loops seamlessly). */
+  @keyframes kiosk-route-flow {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -32; }
+  }
+
+  .route-flow {
+    animation: kiosk-route-flow 1s linear infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .scan-line,
+  .route-flow,
   .animate-pulse-ring,
   .animate-float-slow,
   .animate-soft-pulse {
@@ -225,7 +264,7 @@
     touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: auto;
-    scrollbar-color: rgba(139, 175, 229, 0.55) rgba(3, 19, 46, 0.6);
+    scrollbar-color: rgb(var(--ot-border) / 0.55) rgb(var(--ot-surface-bottom) / 0.6);
   }
 
   .kiosk-scroll::-webkit-scrollbar {
@@ -233,12 +272,12 @@
   }
 
   .kiosk-scroll::-webkit-scrollbar-track {
-    background: rgba(3, 19, 46, 0.6);
+    background: rgb(var(--ot-surface-bottom) / 0.6);
     border-radius: 999px;
   }
 
   .kiosk-scroll::-webkit-scrollbar-thumb {
-    background-color: rgba(139, 175, 229, 0.55);
+    background-color: rgb(var(--ot-border) / 0.55);
     border: 4px solid transparent;
     background-clip: padding-box;
     border-radius: 999px;
@@ -247,7 +286,7 @@
 
   .kiosk-scroll::-webkit-scrollbar-thumb:hover,
   .kiosk-scroll::-webkit-scrollbar-thumb:active {
-    background-color: rgba(139, 175, 229, 0.85);
+    background-color: rgb(var(--ot-border) / 0.85);
   }
 }
 

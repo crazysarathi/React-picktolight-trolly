@@ -3,20 +3,26 @@ import { motion } from 'framer-motion';
 import { ClipboardCheck, TriangleAlert, Play, ScanBarcode } from 'lucide-react';
 import { Button } from 'components/ui/button';
 import { overlayVariants, cardVariants } from 'components/kiosk/motion';
+import { cn } from 'lib/utils';
 
 /**
  * Shown on the order-scan page right after the MAIN barcode is recognised: the customer sees whose order
- * it is and how many medicines are in it, reads the notice, and taps START to open the collection screen.
+ * it is, which picking team (colour) it belongs to and how many medicines are in it, reads the notice, and taps
+ * START to open the collection screen.
  * Scanning another order slip while this is open replaces the pending order.
  */
-export default function OrderConfirmOverlay({ order, medicines = [], onStart, onCancel }) {
+export default function OrderConfirmOverlay({ order, medicines = [], team, onStart, onCancel }) {
   const patientName = order?.patient?.name;
   const count = medicines.length;
   const countLabel = `${count} ${count === 1 ? 'medicine' : 'medicines'} to collect`;
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ot-bg-top/85 p-6"
+      className={cn(
+        'fixed inset-0 z-50 flex items-center justify-center p-6',
+        // Lighter backdrop when the order has a team, so its colour already shows through behind the card
+        team ? 'bg-ot-bg-top/60' : 'bg-ot-bg-top/85'
+      )}
       variants={overlayVariants}
       initial="initial"
       animate="animate"
@@ -44,6 +50,14 @@ export default function OrderConfirmOverlay({ order, medicines = [], onStart, on
           {order?.reference ? `Order ${order.reference} · ` : ''}
           {countLabel}
         </p>
+        {team && (
+          <p className="mt-3 flex justify-center">
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-ot-bg-top/60 px-4 py-1.5 text-sm md:text-base font-bold uppercase tracking-[0.2em] text-white">
+              <span aria-hidden="true" className="h-3.5 w-3.5 rounded-full ring-2 ring-white/40" style={{ backgroundColor: team.from }} />
+              {team.label} team
+            </span>
+          </p>
+        )}
 
         <div className="mt-4 flex items-start gap-3 rounded-2xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-left">
           <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" strokeWidth={2} />
@@ -60,7 +74,7 @@ export default function OrderConfirmOverlay({ order, medicines = [], onStart, on
           </Button>
           <Button
             size="xl"
-            className="min-w-[12rem] font-semibold tracking-wide shadow-[0_18px_50px_-12px_rgba(95,166,255,0.65)]"
+            className="min-w-[12rem] font-semibold tracking-wide shadow-[0_18px_50px_-12px_rgb(var(--ot-action-fill)/0.65)]"
             onClick={onStart}
             autoFocus
           >

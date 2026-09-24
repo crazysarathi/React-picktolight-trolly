@@ -26,10 +26,10 @@ export default function ScanArea({ paused = false, label = 'Scan barcode', class
 
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 pointer-events-none">
           <ScanBarcode className={cn('w-12 h-12 md:w-16 md:h-16 text-ot-action/75', iconClassName)} strokeWidth={1.5} />
-          <div className="flex items-center gap-3 text-ot-text-muted">
-            <span className="h-px w-8 md:w-12 bg-ot-border" />
-            <span className="text-[0.65rem] md:text-xs font-semibold tracking-[0.35em] uppercase">{label}</span>
-            <span className="h-px w-8 md:w-12 bg-ot-border" />
+          <div className="flex max-w-full items-center gap-2 md:gap-3 px-2 text-ot-text-muted">
+            <span className="h-px w-4 md:w-8 shrink bg-ot-border/35" />
+            <span className="whitespace-nowrap text-[0.65rem] md:text-xs font-semibold tracking-[0.3em] uppercase">{label}</span>
+            <span className="h-px w-4 md:w-8 shrink bg-ot-border/35" />
           </div>
         </div>
       </div>

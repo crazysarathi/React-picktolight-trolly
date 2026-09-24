@@ -24,13 +24,13 @@ export default function ConfirmOverlay({
       aria-modal="true"
     >
       <motion.div
-        className="w-full max-w-md rounded-3xl border border-ot-border bg-gradient-to-b from-ot-surface-top to-ot-surface-bottom p-7 text-center shadow-2xl"
+        className="w-full max-w-md rounded-3xl border border-ot-border/35 bg-gradient-to-b from-ot-surface-top to-ot-surface-bottom p-7 text-center shadow-2xl"
         variants={cardVariants}
         initial="initial"
         animate="animate"
         exit="exit"
       >
-        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full border border-ot-border bg-ot-surface-bottom/60 text-ot-text-muted">
+        <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full border border-ot-border/35 bg-ot-surface-bottom/60 text-ot-text-muted">
           <RotateCcw className="h-8 w-8" />
         </div>
         <h2 className="text-2xl font-semibold text-white">{title}</h2>

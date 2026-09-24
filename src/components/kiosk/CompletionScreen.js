@@ -6,11 +6,16 @@ import BackgroundDecor from 'components/kiosk/BackgroundDecor';
 import AnimatedCheck from 'components/kiosk/AnimatedCheck';
 import PharmacyBrand from 'components/kiosk/PharmacyBrand';
 import { screenVariants, fadeUp } from 'components/kiosk/motion';
+import { cn } from 'lib/utils';
 
 const MAX_CHIPS = 6;
 
-/** "All Medicines Collected" — strong but calm success animation + COMPLETE button. */
-export default function CompletionScreen({ pharmacy, order, medicines, backgroundMotion = true, onComplete }) {
+/**
+ * "All Medicines Collected" — strong but calm success animation + COMPLETE button.
+ * With a `team` the page is in the team colour (KioskPage keeps the theme on until COMPLETE is tapped), so the
+ * content sits on a dark translucent panel — like the collection-screen header — to stay readable on yellow too.
+ */
+export default function CompletionScreen({ pharmacy, order, team, medicines, backgroundMotion = true, onComplete }) {
   const totalPacks = medicines.reduce((sum, m) => sum + (Number(m.quantity) || 0), 0);
   const showChips = medicines.length > 0 && medicines.length <= MAX_CHIPS;
 
@@ -27,7 +32,12 @@ export default function CompletionScreen({ pharmacy, order, medicines, backgroun
         <PharmacyBrand name={pharmacy.name} logo={pharmacy.logo} size="sm" />
       </div>
 
-      <div className="relative z-10 m-auto flex w-full max-w-2xl flex-col items-center px-6 py-4 text-center">
+      <div
+        className={cn(
+          'relative z-10 m-auto flex w-full max-w-2xl flex-col items-center px-6 py-4 text-center',
+          team && 'rounded-3xl border border-white/10 bg-ot-bg-top/55 py-8 md:py-10 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]'
+        )}
+      >
         <div className="relative mb-4 h-28 w-28 md:h-36 md:w-36 h-short:h-28 h-short:w-28">
           {[0, 1, 2].map((i) => (
             <motion.span
@@ -57,6 +67,12 @@ export default function CompletionScreen({ pharmacy, order, medicines, backgroun
         <motion.p {...fadeUp(0.7)} className="mt-2 text-lg md:text-xl text-ot-text-muted">
           {order?.patient?.name ? `${order.patient.name} · ` : ''}Your order is ready{order?.reference ? ` · ${order.reference}` : ''}
         </motion.p>
+        {team && (
+          <motion.p {...fadeUp(0.75)} className="mt-2 flex items-center gap-1.5 text-[0.65rem] md:text-xs font-bold uppercase tracking-[0.25em] text-white/85">
+            <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full ring-2 ring-white/40" style={{ backgroundColor: team.from }} />
+            {team.label} team
+          </motion.p>
+        )}
 
         <motion.div {...fadeUp(0.85)} className="mt-4 flex max-w-xl flex-wrap justify-center gap-2">
           {showChips ? (
@@ -81,7 +97,7 @@ export default function CompletionScreen({ pharmacy, order, medicines, backgroun
           <Button
             size="2xl"
             onClick={onComplete}
-            className="relative min-w-[16rem] shadow-[0_18px_50px_-12px_rgba(95,166,255,0.65)]"
+            className="relative min-w-[16rem] shadow-[0_18px_50px_-12px_rgb(var(--ot-action-fill)/0.65)]"
             aria-label="Complete and start a new order"
           >
             COMPLETE
