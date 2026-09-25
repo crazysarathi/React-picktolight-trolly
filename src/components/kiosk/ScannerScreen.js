@@ -22,7 +22,7 @@ function EmptyOrder({ pharmacy, order, onBack }) {
         <div className="flex h-20 w-20 items-center justify-center rounded-full border border-ot-border/35 bg-ot-surface-bottom/60 text-ot-text-muted">
           <PackageOpen className="h-10 w-10" strokeWidth={1.5} />
         </div>
-        <h2 className="text-2xl font-semibold text-white">No medicines to collect</h2>
+        <h2 className="text-2xl font-semibold text-ot-text">No medicines to collect</h2>
         <p className="text-ot-text-muted">
           {order?.reference ? `Order ${order.reference} has no medicines. ` : 'This order has no medicines. '}
           {pharmacy.helpNote}
@@ -41,7 +41,7 @@ function AllCollectedCard() {
     <motion.div className="flex min-h-0 flex-1 flex-col" variants={cardVariants} initial="initial" animate="animate" exit="exit">
       <Card className="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 p-3 text-center border-emerald-400/30">
         <AnimatedCheck className="h-14 w-14 h-tall:h-16 h-tall:w-16 text-emerald-400" />
-        <h2 className="text-lg md:text-xl font-semibold text-white">All medicines collected</h2>
+        <h2 className="text-lg md:text-xl font-semibold text-ot-text">All medicines collected</h2>
         <p className="text-xs md:text-sm text-ot-text-muted">Preparing your summary…</p>
       </Card>
     </motion.div>
@@ -128,7 +128,7 @@ export default function ScannerScreen({
       <header
         className={cn(
           'relative flex h-16 h-short:h-14 shrink-0 items-center justify-between gap-3 border-b border-ot-border/60 px-4 md:px-5',
-          // On a team-coloured page the header gets a dark bar so its white text stays readable on every colour
+          // On a team-coloured page the header gets a translucent bar (dark on the dark teams, grey on the white team) so its text stays readable on every colour
           team && 'bg-ot-bg-top/60'
         )}
       >
@@ -136,10 +136,10 @@ export default function ScannerScreen({
 
         {/* Title block is absolutely centred so it sits in the true middle of the page regardless of the side widths */}
         <div className="absolute left-1/2 top-1/2 hidden md:flex -translate-x-1/2 -translate-y-1/2 flex-col items-center leading-tight whitespace-nowrap">
-          <span className="text-lg font-semibold text-white">Collect Your Medicines</span>
+          <span className="text-lg font-semibold text-ot-text">Collect Your Medicines</span>
           {team && (
-            <span className="mt-0.5 flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-[0.25em] text-white/85">
-              <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full ring-2 ring-white/40" style={{ backgroundColor: team.from }} />
+            <span className="mt-0.5 flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-[0.25em] text-ot-text/85">
+              <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full ring-2 ring-ot-text/40" style={{ backgroundColor: team.from }} />
               {team.label} team
             </span>
           )}
@@ -148,7 +148,7 @@ export default function ScannerScreen({
         <Button
           variant="ghost"
           size="xl"
-          className="h-11 shrink-0 px-3 md:px-4 text-base text-ot-text-muted hover:text-white"
+          className="h-11 shrink-0 px-3 md:px-4 text-base text-ot-text-muted hover:text-ot-text"
           onClick={onCancelRequest}
           aria-label="Start over"
         >

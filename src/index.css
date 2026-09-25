@@ -48,12 +48,22 @@
     --ot-surface-elev-bottom: 14 46 84; /* #0e2e54 */
     --ot-btn-secondary-top: 66 86 121;  /* #425679 */
     --ot-btn-secondary-bottom: 3 19 46; /* #03132e */
+    --ot-text: 255 255 255;             /*          headings, names, values (black on the light team theme) */
     --ot-text-muted: 167 190 223;       /* #a7bedf */
     --ot-action: 95 166 255;            /* #5fa6ff  accent: text, icons, borders, badges */
     --ot-action-fill: 95 166 255;       /* #5fa6ff  solid buttons, brand tile, progress bar */
     --ot-action-fg: 255 255 255;        /*          text on solid buttons */
     --ot-action-hover: 116 179 255;     /* #74b3ff  solid buttons, hovered / pressed */
     --ot-border: 139 175 229;           /* rgba(139,175,229,.35) = `border-ot-border/35` */
+
+    /* Fixed status colours — emerald (collected / success) and amber (pending / warning). tailwind.config.js maps
+       emerald-100/300/400 and amber-100/300/400 onto these so the light team theme can swap in darker shades. */
+    --ot-ok-100: 209 250 229;           /* emerald-100 */
+    --ot-ok-300: 110 231 183;           /* emerald-300 */
+    --ot-ok-400: 52 211 153;            /* emerald-400 */
+    --ot-warn-100: 254 243 199;         /* amber-100 */
+    --ot-warn-300: 252 211 77;          /* amber-300 */
+    --ot-warn-400: 251 191 36;          /* amber-400 */
 
     color-scheme: dark;
   }
@@ -159,6 +169,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    color: rgb(var(--ot-text)); /* white, or black while a light team (white) is open — see src/lib/teamTheme.js */
   }
 
   .kiosk-root.kiosk-no-cursor,

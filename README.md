@@ -38,7 +38,7 @@ Edit **`src/data/data.js`** only:
 export const pharmacyData = { name, tagline, welcomeMessage, helpNote, logo };
 export const medicines   = [ { id, barcode, name, form, pack, quantity, dosage, manufacturer, location: { wall, cupboard, shelf }, image }, … ]; // catalogue
 export const storeLayout = { entranceLabel, walls: [ { id, label, side: left|back|right, cupboards, shelves }, … ] }; // the picking room on the route map
-export const teamColors  = { red, yellow, green, violet, orange, blue }; // picking teams: { label, from, to } background colours
+export const teamColors  = { white, violet, red, green, blue, yellow }; // picking teams, one per trolley LED (LED 1 … 6): { label, from, to } background colours
 export const orders      = [ { barcode, reference, teamColor, patient: { name, age, gender, patientId, phone, doctor }, items: [{ medicineId, quantity }] }, … ];
 export const kioskConfig = { timings, confirmOrderStart, layout, hideCursor, backgroundMotion, testScanner, scanner };
 ```
@@ -48,14 +48,20 @@ current-medicine card and on the completion screen; the other fields are kept fo
 `location` says where a pack is kept: `wall` is a `storeLayout` wall id, `cupboard` is numbered from the entrance
 (1…`cupboards` of that wall), `shelf` from the bottom. It is shown as WALL → CUPBOARD → SHELF above the medicine name,
 and the route map beside the scanner lights that cupboard (one LED per cupboard) and animates the walk to it from the entrance.
+An order's `items` are listed in PICKING order — the route map runs its track through them first → last — so the sample
+orders walk the room in one loop: Wall A entrance → back, Wall B left → right, Wall C back → entrance (the live API should
+deliver items in that order).
 `teamColor` is the picking team (trolley) of the order — one of the `teamColors` keys. From the START confirmation
 through the whole collection screen the whole kiosk (page background, cards, tiles, accent text, borders, buttons) is
 re-tinted in that colour, and so is the completion screen — only the order-scan page stays navy (the team name is shown on the
 "Order found" card, under the screen title and on the completion panel); leave the field
-out for the default navy theme. Each team only defines `from` / `to`; every other shade — including a readable text
-colour for its buttons — is derived in `src/lib/teamTheme.js`.
+out for the default navy theme. Each team only defines `from` / `to` — `from` is exactly the colour the trolley LED shows,
+`to` a deeper shade of it; every other shade — including a readable text colour for its buttons — is derived in
+`src/lib/teamTheme.js`. **White** is a *light* team: because its `to` is light the kiosk flips to a light theme for that
+order — white page, light-grey cards, black text, black accents and buttons, darker status greens/ambers (any team with a light
+`to` colour behaves the same).
 
-Sample order barcodes: **111001 … 111006** (teams red · yellow · green · violet · orange · blue) ·
+Sample order barcodes: **111001 … 111006** (teams white · violet · red · green · blue · yellow = trolley LED 1 … 6) ·
 **1121125101363** (ORD-1363, 20-line order, scrolls, no team) · sample medicine barcodes: **891 … 910**.
 The logo is `public/images/favicon-white.png` (white-on-transparent version of `public/favicon.ico`).
 

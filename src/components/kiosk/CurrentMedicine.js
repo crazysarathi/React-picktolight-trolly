@@ -92,7 +92,7 @@ export default function CurrentMedicine({ medicine, index, total, status, isNext
             >
               <div className="flex flex-col items-center gap-3">
                 <AnimatedCheck className="h-20 w-20 h-tall:h-28 h-tall:w-28 text-emerald-400" />
-                <p className="text-2xl h-tall:text-4xl font-semibold text-white">All medicines collected</p>
+                <p className="text-2xl h-tall:text-4xl font-semibold text-ot-text">All medicines collected</p>
                 <p className="text-base h-tall:text-xl text-ot-text-muted">
                   {total} of {total} packs are in your bag
                 </p>
@@ -123,7 +123,7 @@ export default function CurrentMedicine({ medicine, index, total, status, isNext
                 <h2
                   className={cn(
                     'line-clamp-2 break-words text-2xl h-tall:text-4xl h-xtall:text-6xl font-bold leading-tight',
-                    isCollected ? 'text-ot-text-muted line-through decoration-emerald-400/50' : 'text-white'
+                    isCollected ? 'text-ot-text-muted line-through decoration-emerald-400/50' : 'text-ot-text'
                   )}
                 >
                   {medicine.name}
@@ -142,7 +142,7 @@ export default function CurrentMedicine({ medicine, index, total, status, isNext
                   <span className={cn('text-[0.65rem] h-tall:text-sm h-xtall:text-base font-bold uppercase tracking-[0.25em]', isCollected ? 'text-emerald-400' : 'text-ot-action')}>
                     Quantity
                   </span>
-                  <span className="text-4xl h-tall:text-6xl h-xtall:text-7xl font-bold leading-none text-white tabular-nums">{qty}</span>
+                  <span className="text-4xl h-tall:text-6xl h-xtall:text-7xl font-bold leading-none text-ot-text tabular-nums">{qty}</span>
                   <span className="text-sm h-tall:text-lg h-xtall:text-2xl text-ot-text-muted">{qty === 1 ? 'pack' : 'packs'}</span>
                 </div>
               </div>

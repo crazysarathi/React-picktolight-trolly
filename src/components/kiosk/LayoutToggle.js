@@ -36,7 +36,7 @@ export default function LayoutToggle({ value, onChange, className }) {
               'flex h-10 items-center gap-2 rounded-full px-3 md:px-4 text-xs md:text-sm font-bold uppercase tracking-[0.15em] transition-colors duration-200 active:scale-[0.96] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
               active
                 ? 'bg-ot-action-fill text-ot-action-fg shadow-[0_10px_30px_-10px_rgb(var(--ot-action-fill)/0.7)]'
-                : 'text-ot-text-muted hover:text-white'
+                : 'text-ot-text-muted hover:text-ot-text'
             )}
           >
             <Icon className="h-4 w-4 md:h-5 md:w-5 shrink-0" strokeWidth={2} />

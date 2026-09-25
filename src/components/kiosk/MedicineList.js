@@ -45,7 +45,7 @@ const MedicineListItem = forwardRef(function MedicineListItem({ medicine, index,
         <p
           className={cn(
             'min-w-0 flex-1 truncate text-base h-tall:text-lg font-semibold leading-tight',
-            isCollected ? 'text-ot-text-muted line-through decoration-emerald-400/40' : 'text-white'
+            isCollected ? 'text-ot-text-muted line-through decoration-emerald-400/40' : 'text-ot-text'
           )}
         >
           {medicine.name}

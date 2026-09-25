@@ -17,23 +17,26 @@ export const pharmacyData = {
 };
 
 /**
- * TEAM COLOURS — the picking teams / trolleys. Every order carries a `teamColor` (one of the keys below).
- * From the moment that order is opened (the START confirmation and the whole collection screen) the WHOLE
- * kiosk — page background, cards, tiles, buttons, overlays — is re-tinted in this colour, so the picker sees
- * at a glance which team's trolley the order goes to. Only two colours are needed per team; every other
- * shade (cards, accent text, borders, buttons and their text colour) is derived from them (src/lib/teamTheme.js).
+ * TEAM COLOURS — the picking teams / trolleys, ONE PER TROLLEY LED and in LED order (LED 1 … LED 6). Every order
+ * carries a `teamColor` (one of the keys below). From the moment that order is opened (the START confirmation and the
+ * whole collection screen) the WHOLE kiosk — page background, cards, tiles, buttons, overlays — is re-tinted in this
+ * colour, so the picker sees at a glance which team's trolley the order goes to. Only two colours are needed per team;
+ * every other shade (cards, text, accent, borders, buttons and their text colour) is derived from them (src/lib/teamTheme.js).
  *
- *  label   team name shown on the "Order found" card and under the collection-screen title
- *  from    page colour at the top of the screen (the vivid team colour)
- *  to      page colour at the bottom of the screen (a deeper shade of the same colour)
+ *  label   team name shown on the "Order found" card, under the collection-screen title and on the completion panel
+ *  from    page colour at the top of the screen — EXACTLY the colour the trolley LED shows, so screen and light match
+ *  to      page colour at the bottom of the screen (a deeper shade of the same colour; cards are derived from it)
+ *
+ * WHITE is a LIGHT team: its `to` is light, so the kiosk flips to a light theme — white page, light-grey cards, BLACK text,
+ * black accents / buttons (nothing pale on white). Any team whose `to` is a light colour behaves the same.
  */
 export const teamColors = {
-  red:    { label: "Red",    from: "#dc2626", to: "#7f1d1d" },
-  yellow: { label: "Yellow", from: "#facc15", to: "#a16207" },
-  green:  { label: "Green",  from: "#22c55e", to: "#14532d" },
-  violet: { label: "Violet", from: "#8b5cf6", to: "#4c1d95" },
-  orange: { label: "Orange", from: "#f97316", to: "#7c2d12" },
-  blue:   { label: "Blue",   from: "#3b82f6", to: "#1e3a8a" },
+  white:  { label: "White",  from: "#ffffff", to: "#d4d4d8" }, // LED 1 — (255, 255, 255)
+  violet: { label: "Violet", from: "#ff00ff", to: "#800080" }, // LED 2 — (255,   0, 255)
+  red:    { label: "Red",    from: "#ff0000", to: "#800000" }, // LED 3 — (255,   0,   0)
+  green:  { label: "Green",  from: "#00ff00", to: "#007a00" }, // LED 4 — (  0, 255,   0)
+  blue:   { label: "Blue",   from: "#0000ff", to: "#000080" }, // LED 5 — (  0,   0, 255)
+  yellow: { label: "Yellow", from: "#ffff00", to: "#b39700" }, // LED 6 — (255, 255,   0)
 };
 
 /**
@@ -161,17 +164,22 @@ export const medicines = [
  *
  *  barcode    what the main scanner emits for this order
  *  reference  human readable order number shown in the header
- *  teamColor  picking team / trolley of this order — a key of `teamColors` above (red | yellow | green | violet | orange | blue).
+ *  teamColor  picking team / trolley of this order — a key of `teamColors` above, one per trolley LED:
+ *             white | violet | red | green | blue | yellow (LED 1 … 6).
  *             The kiosk background takes this colour while the order is open. Leave it out for no team colour.
  *  patient    details shown in the "Patient" card on the scanning screen — every field is optional:
  *               name, age, gender, patientId, phone, doctor
- *  items      [{ medicineId, quantity? }] — quantity overrides the catalogue default
+ *  items      [{ medicineId, quantity? }] — quantity overrides the catalogue default.
+ *             LIST ORDER = PICKING ORDER: the route map runs the track through the items first → last and the
+ *             current-medicine card follows the same sequence. The sample orders below are listed in WALKING order
+ *             — Wall A entrance → back (A1, A2, A3), Wall B left → right (B1 … B4), Wall C back → entrance (C3, C2, C1)
+ *             — so the track never criss-crosses the room. The live API is expected to deliver items in that order.
  */
 export const orders = [
   {
     barcode: "111001",
     reference: "ORD-1001",
-    teamColor: "red",
+    teamColor: "white",
     patient: {
       name: "Kumar",
       age: 46,
@@ -182,16 +190,16 @@ export const orders = [
     },
     items: [
       { medicineId: "MED001", quantity: 1 },
-      { medicineId: "MED002", quantity: 2 },
-      { medicineId: "MED003", quantity: 1 },
       { medicineId: "MED004", quantity: 1 },
+      { medicineId: "MED003", quantity: 1 },
       { medicineId: "MED005", quantity: 1 },
+      { medicineId: "MED002", quantity: 2 },
     ],
   },
   {
     barcode: "111002",
     reference: "ORD-1002",
-    teamColor: "yellow",
+    teamColor: "violet",
     patient: {
       name: "Priya Sharma",
       age: 32,
@@ -208,7 +216,7 @@ export const orders = [
   {
     barcode: "111003",
     reference: "ORD-1003",
-    teamColor: "green",
+    teamColor: "red",
     patient: {
       name: "Arun Prakash",
       age: 58,
@@ -218,15 +226,15 @@ export const orders = [
       doctor: "Dr. K. Venkatesh",
     },
     items: [
-      { medicineId: "MED003", quantity: 2 },
       { medicineId: "MED001", quantity: 1 },
+      { medicineId: "MED003", quantity: 2 },
       { medicineId: "MED002", quantity: 1 },
     ],
   },
   {
     barcode: "111004",
     reference: "ORD-1004",
-    teamColor: "violet",
+    teamColor: "green",
     patient: {
       name: "Meena Rajan",
       age: 29,
@@ -236,16 +244,16 @@ export const orders = [
       doctor: "Dr. A. Balaji",
     },
     items: [
+      { medicineId: "MED011", quantity: 2 },
       { medicineId: "MED006", quantity: 1 },
       { medicineId: "MED009", quantity: 1 },
-      { medicineId: "MED011", quantity: 2 },
       { medicineId: "MED014", quantity: 1 },
     ],
   },
   {
     barcode: "111005",
     reference: "ORD-1005",
-    teamColor: "orange",
+    teamColor: "blue",
     patient: {
       name: "Suresh Babu",
       age: 51,
@@ -264,7 +272,7 @@ export const orders = [
   {
     barcode: "111006",
     reference: "ORD-1006",
-    teamColor: "blue",
+    teamColor: "yellow",
     patient: {
       name: "Fathima Begum",
       age: 37,
@@ -274,11 +282,11 @@ export const orders = [
       doctor: "Dr. J. Thomas",
     },
     items: [
-      { medicineId: "MED012", quantity: 1 },
       { medicineId: "MED013", quantity: 1 },
+      { medicineId: "MED012", quantity: 1 },
+      { medicineId: "MED017", quantity: 1 },
       { medicineId: "MED015", quantity: 1 },
       { medicineId: "MED016", quantity: 1 },
-      { medicineId: "MED017", quantity: 1 },
     ],
   },
   {
@@ -295,25 +303,25 @@ export const orders = [
     },
     items: [
       { medicineId: "MED001", quantity: 2 },
-      { medicineId: "MED002", quantity: 1 },
-      { medicineId: "MED003", quantity: 1 },
+      { medicineId: "MED011", quantity: 1 },
       { medicineId: "MED004", quantity: 1 },
-      { medicineId: "MED005", quantity: 1 },
-      { medicineId: "MED006", quantity: 1 },
+      { medicineId: "MED013", quantity: 1 },
       { medicineId: "MED007", quantity: 2 },
       { medicineId: "MED008", quantity: 1 },
-      { medicineId: "MED009", quantity: 1 },
       { medicineId: "MED010", quantity: 1 },
-      { medicineId: "MED011", quantity: 1 },
+      { medicineId: "MED003", quantity: 1 },
+      { medicineId: "MED006", quantity: 1 },
+      { medicineId: "MED009", quantity: 1 },
       { medicineId: "MED012", quantity: 1 },
-      { medicineId: "MED013", quantity: 1 },
+      { medicineId: "MED018", quantity: 1 },
+      { medicineId: "MED005", quantity: 1 },
+      { medicineId: "MED019", quantity: 1 },
       { medicineId: "MED014", quantity: 2 },
+      { medicineId: "MED017", quantity: 1 },
+      { medicineId: "MED002", quantity: 1 },
+      { medicineId: "MED020", quantity: 1 },
       { medicineId: "MED015", quantity: 1 },
       { medicineId: "MED016", quantity: 1 },
-      { medicineId: "MED017", quantity: 1 },
-      { medicineId: "MED018", quantity: 1 },
-      { medicineId: "MED019", quantity: 1 },
-      { medicineId: "MED020", quantity: 1 },
     ],
   },
 ];

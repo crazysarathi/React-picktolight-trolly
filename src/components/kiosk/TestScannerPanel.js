@@ -27,7 +27,7 @@ export default function TestScannerPanel({ remainingBarcodes = [] }) {
           {unique.length > 0 ? (
             <>
               {' '}· still to collect:{' '}
-              <span className="font-semibold text-white tabular-nums">{unique.join(' · ')}</span>
+              <span className="font-semibold text-ot-text tabular-nums">{unique.join(' · ')}</span>
             </>
           ) : null}
         </span>

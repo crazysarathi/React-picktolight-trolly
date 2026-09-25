@@ -39,7 +39,7 @@ export default function InfoStrip({ segments, tone = 'muted', size = 'sm', Icon,
           <div className={cn('flex min-w-0 items-center gap-1.5', s.pad)}>
             {i === 0 && Icon && <Icon className={cn('shrink-0', s.icon, action ? 'text-ot-action' : 'text-ot-action/80')} strokeWidth={1.9} />}
             <span className={cn('shrink-0 font-bold uppercase tracking-[0.18em]', s.label, action ? 'text-ot-action' : 'text-ot-text-muted')}>{item.label}</span>
-            <span className={cn('truncate font-semibold text-white tabular-nums', s.value)}>{item.value}</span>
+            <span className={cn('truncate font-semibold text-ot-text tabular-nums', s.value)}>{item.value}</span>
           </div>
         </React.Fragment>
       ))}

@@ -51,9 +51,9 @@ const Button = React.forwardRef(({
     if (variant === "default") {
         variantStyles = "bg-ot-action-fill text-ot-action-fg hover:bg-ot-action-hover active:bg-ot-action-hover h-10 px-4 py-2";
     } else if (variant === "secondary") {
-        variantStyles = "border border-ot-border/35 bg-gradient-to-b from-ot-btn-secondary-top to-ot-btn-secondary-bottom text-white hover:from-ot-surface-elev-top hover:to-ot-surface-elev-bottom active:from-ot-surface-elev-top active:to-ot-surface-elev-bottom h-10 px-4 py-2";
+        variantStyles = "border border-ot-border/35 bg-gradient-to-b from-ot-btn-secondary-top to-ot-btn-secondary-bottom text-ot-text hover:from-ot-surface-elev-top hover:to-ot-surface-elev-bottom active:from-ot-surface-elev-top active:to-ot-surface-elev-bottom h-10 px-4 py-2";
     } else if (variant === "outline") {
-        variantStyles = "border border-ot-border/35 hover:bg-ot-surface-elev-bottom active:bg-ot-surface-elev-bottom text-white h-10 px-4 py-2";
+        variantStyles = "border border-ot-border/35 hover:bg-ot-surface-elev-bottom active:bg-ot-surface-elev-bottom text-ot-text h-10 px-4 py-2";
     } else if (variant === "ghost") {
         variantStyles = "bg-transparent hover:bg-ot-surface-elev-bottom active:bg-ot-surface-elev-bottom";
     } else if (variant === "destructive") {

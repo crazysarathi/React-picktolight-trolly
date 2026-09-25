@@ -35,7 +35,7 @@ export default function PharmacyBrand({ name, logo, size = 'md', showName = true
     <div className={cn('flex items-center gap-3 min-w-0', className)}>
       <BrandLogo logo={logo} name={name} size={size} />
       {showName && (
-        <span className={cn('font-bold uppercase tracking-[0.12em] text-white truncate', s.text)}>{name}</span>
+        <span className={cn('font-bold uppercase tracking-[0.12em] text-ot-text truncate', s.text)}>{name}</span>
       )}
     </div>
   );

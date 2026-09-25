@@ -31,7 +31,7 @@ export default function ScanPrompt({ progress, paused = false, className }) {
             <span className="whitespace-nowrap text-xs font-bold uppercase tracking-[0.2em] h-xtall:tracking-[0.12em]">Scan barcode</span>
           </div>
           {progress && (
-            <span className="ml-auto shrink-0 text-xs font-semibold text-white tabular-nums">{progress.remaining} remaining</span>
+            <span className="ml-auto shrink-0 text-xs font-semibold text-ot-text tabular-nums">{progress.remaining} remaining</span>
           )}
         </div>
 

@@ -35,7 +35,7 @@ export default function CompletionScreen({ pharmacy, order, team, medicines, bac
       <div
         className={cn(
           'relative z-10 m-auto flex w-full max-w-2xl flex-col items-center px-6 py-4 text-center',
-          team && 'rounded-3xl border border-white/10 bg-ot-bg-top/55 py-8 md:py-10 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]'
+          team && 'rounded-3xl border border-ot-text/10 bg-ot-bg-top/55 py-8 md:py-10 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.6)]'
         )}
       >
         <div className="relative mb-4 h-28 w-28 md:h-36 md:w-36 h-short:h-28 h-short:w-28">
@@ -61,15 +61,15 @@ export default function CompletionScreen({ pharmacy, order, team, medicines, bac
         <motion.p {...fadeUp(0.5)} className="text-[0.65rem] md:text-xs font-semibold uppercase tracking-[0.4em] text-emerald-300/90">
           Order complete
         </motion.p>
-        <motion.h1 {...fadeUp(0.6)} className="mt-1 text-[clamp(1.8rem,4.5vw,3rem)] font-bold leading-tight text-white">
+        <motion.h1 {...fadeUp(0.6)} className="mt-1 text-[clamp(1.8rem,4.5vw,3rem)] font-bold leading-tight text-ot-text">
           All Medicines Collected
         </motion.h1>
         <motion.p {...fadeUp(0.7)} className="mt-2 text-lg md:text-xl text-ot-text-muted">
           {order?.patient?.name ? `${order.patient.name} · ` : ''}Your order is ready{order?.reference ? ` · ${order.reference}` : ''}
         </motion.p>
         {team && (
-          <motion.p {...fadeUp(0.75)} className="mt-2 flex items-center gap-1.5 text-[0.65rem] md:text-xs font-bold uppercase tracking-[0.25em] text-white/85">
-            <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full ring-2 ring-white/40" style={{ backgroundColor: team.from }} />
+          <motion.p {...fadeUp(0.75)} className="mt-2 flex items-center gap-1.5 text-[0.65rem] md:text-xs font-bold uppercase tracking-[0.25em] text-ot-text/85">
+            <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full ring-2 ring-ot-text/40" style={{ backgroundColor: team.from }} />
             {team.label} team
           </motion.p>
         )}

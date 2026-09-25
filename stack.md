@@ -33,10 +33,14 @@
 | **Text** | Muted | `#a7bedf` |
 
 Every `ot-*` token is a CSS variable ("r g b" channels, defaults in `src/index.css :root`; `ot-border` is always used with
-an alpha, `/35` being the standard border). While an order with a `teamColor` is open, `KioskPage` overrides them all with
-shades derived from that team's colour (`src/lib/teamTheme.js`): surfaces, accent text (`ot-action`, a light tint), borders,
-solid buttons (`ot-action-fill` = the team colour, `ot-action-fg` = white or dark text depending on its luminance) and the
-focus ring. Only the semantic status colours (emerald = collected / success, amber = pending / warning) stay fixed.
+an alpha, `/35` being the standard border). Primary text is `ot-text` (white by default — never a literal `text-white`, except
+on the red destructive button). While an order with a `teamColor` is open, `KioskPage` overrides them all with shades derived
+from that team's colour (`src/lib/teamTheme.js`): surfaces, accent text (`ot-action`, a light tint), borders, solid buttons
+(`ot-action-fill` = the team colour, `ot-action-fg` = white or dark text depending on its luminance) and the focus ring.
+A team whose `to` colour is light (the **white** team) gets the mirror-image LIGHT theme instead: light-grey surfaces,
+`ot-text` black, `ot-action` / `ot-action-fill` near-black with white button text. The semantic status colours
+(emerald = collected / success, amber = pending / warning) are routed through `--ot-ok-100/300/400` and `--ot-warn-100/300/400`
+(defaults = Tailwind's emerald/amber 100/300/400) so the light theme can swap in darker shades; everything else about them stays fixed.
 
 ### Shadcn Base Variables (HSL)
 - **Background**: `222 47% 7%`

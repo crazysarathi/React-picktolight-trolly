@@ -43,7 +43,7 @@ export default function OrderConfirmOverlay({ order, medicines = [], team, onSta
         </div>
 
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-emerald-300/90">Order found</p>
-        <h2 id="order-confirm-title" className="mt-1 text-2xl md:text-3xl font-semibold text-white">
+        <h2 id="order-confirm-title" className="mt-1 text-2xl md:text-3xl font-semibold text-ot-text">
           {patientName || `Order ${order?.reference ?? ''}`.trim()}
         </h2>
         <p className="mt-1 text-base md:text-lg text-ot-text-muted tabular-nums">
@@ -52,8 +52,8 @@ export default function OrderConfirmOverlay({ order, medicines = [], team, onSta
         </p>
         {team && (
           <p className="mt-3 flex justify-center">
-            <span className="inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-ot-bg-top/60 px-4 py-1.5 text-sm md:text-base font-bold uppercase tracking-[0.2em] text-white">
-              <span aria-hidden="true" className="h-3.5 w-3.5 rounded-full ring-2 ring-white/40" style={{ backgroundColor: team.from }} />
+            <span className="inline-flex items-center gap-2.5 rounded-full border border-ot-text/20 bg-ot-bg-top/60 px-4 py-1.5 text-sm md:text-base font-bold uppercase tracking-[0.2em] text-ot-text">
+              <span aria-hidden="true" className="h-3.5 w-3.5 rounded-full ring-2 ring-ot-text/40" style={{ backgroundColor: team.from }} />
               {team.label} team
             </span>
           </p>
@@ -62,7 +62,7 @@ export default function OrderConfirmOverlay({ order, medicines = [], team, onSta
         <div className="mt-4 flex items-start gap-3 rounded-2xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-left">
           <TriangleAlert className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" strokeWidth={2} />
           <p className="text-sm md:text-base text-amber-100">
-            Please make sure this is your order. Tap <span className="font-semibold text-white">START</span> to begin — on the
+            Please make sure this is your order. Tap <span className="font-semibold text-ot-text">START</span> to begin — on the
             next screen, scan the barcode on each medicine pack to collect it.
           </p>
         </div>

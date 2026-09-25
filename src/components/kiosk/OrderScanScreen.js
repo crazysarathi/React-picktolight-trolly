@@ -51,7 +51,7 @@ export default function OrderScanScreen({
 
         <motion.h1
           {...fadeUp(0.25)}
-          className="mt-1 text-[clamp(1.6rem,4.5vw,3rem)] font-bold uppercase tracking-[0.06em] text-white leading-tight"
+          className="mt-1 text-[clamp(1.6rem,4.5vw,3rem)] font-bold uppercase tracking-[0.06em] text-ot-text leading-tight"
         >
           {pharmacy.name}
         </motion.h1>
@@ -85,7 +85,7 @@ export default function OrderScanScreen({
                 {orders.map((o, i) => (
                   <span key={o.barcode}>
                     {i > 0 && ' · '}
-                    <span className="font-semibold text-white">{o.barcode}</span>
+                    <span className="font-semibold text-ot-text">{o.barcode}</span>
                     {o.reference ? ` (${o.reference})` : ''}
                   </span>
                 ))}

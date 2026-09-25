@@ -92,7 +92,7 @@ export default function ScanError({ feedback, helpNote, remaining = 0, onDismiss
           </div>
 
           <p className={cn('text-xs font-semibold uppercase tracking-[0.35em]', tone.eyebrow)}>Please check</p>
-          <h2 className="mt-1 text-2xl md:text-3xl font-semibold text-white">{content.title}</h2>
+          <h2 className="mt-1 text-2xl md:text-3xl font-semibold text-ot-text">{content.title}</h2>
           <p className="mt-2 text-base md:text-lg text-ot-text-muted">{content.body(feedback)}</p>
           {hint && <p className="mt-2 text-sm md:text-base text-ot-text-muted">{hint}</p>}
 

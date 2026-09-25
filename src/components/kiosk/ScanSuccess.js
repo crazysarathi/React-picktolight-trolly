@@ -39,7 +39,7 @@ export default function ScanSuccess({ feedback, collectedAfter, total, onContinu
         </div>
 
         <p className="text-[0.65rem] md:text-xs font-semibold uppercase tracking-[0.35em] text-emerald-300/90">Medicine found</p>
-        <h2 className="mt-2 text-2xl md:text-3xl font-semibold text-white">{medicine.name}</h2>
+        <h2 className="mt-2 text-2xl md:text-3xl font-semibold text-ot-text">{medicine.name}</h2>
 
         <motion.div
           className="mt-4 inline-flex items-center gap-2 rounded-full bg-emerald-400/15 px-4 py-2 text-base md:text-lg font-semibold text-emerald-300"

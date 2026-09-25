@@ -60,7 +60,22 @@ module.exports = {
         "ot-btn-secondary-top": "rgb(var(--ot-btn-secondary-top) / <alpha-value>)",
         "ot-btn-secondary-bottom": "rgb(var(--ot-btn-secondary-bottom) / <alpha-value>)",
         "ot-border": "rgb(var(--ot-border) / <alpha-value>)",             // always with an alpha: `border-ot-border/35` is the standard border
+        "ot-text": "rgb(var(--ot-text) / <alpha-value>)",                 // headings, names, values: white, black on the light (white) team theme
         "ot-text-muted": "rgb(var(--ot-text-muted) / <alpha-value>)",
+
+        // Fixed status colours (collected / success = emerald, pending / warning = amber). The shades in use are routed
+        // through variables (defaults = Tailwind's own values) so that the LIGHT team theme (white) can swap in darker
+        // ones; every other shade of the two scales stays Tailwind's.
+        emerald: {
+          100: "rgb(var(--ot-ok-100) / <alpha-value>)",
+          300: "rgb(var(--ot-ok-300) / <alpha-value>)",
+          400: "rgb(var(--ot-ok-400) / <alpha-value>)",
+        },
+        amber: {
+          100: "rgb(var(--ot-warn-100) / <alpha-value>)",
+          300: "rgb(var(--ot-warn-300) / <alpha-value>)",
+          400: "rgb(var(--ot-warn-400) / <alpha-value>)",
+        },
       },
       fontFamily: {
         sans: ["Bai Jamjuree"],

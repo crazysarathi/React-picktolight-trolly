@@ -33,7 +33,7 @@ export default function ConfirmOverlay({
         <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full border border-ot-border/35 bg-ot-surface-bottom/60 text-ot-text-muted">
           <RotateCcw className="h-8 w-8" />
         </div>
-        <h2 className="text-2xl font-semibold text-white">{title}</h2>
+        <h2 className="text-2xl font-semibold text-ot-text">{title}</h2>
         <p className="mt-2 text-base text-ot-text-muted">{description}</p>
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
           <Button size="xl" variant="secondary" className="min-w-[11rem]" onClick={onCancel} autoFocus>

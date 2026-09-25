@@ -39,7 +39,7 @@ export default function ProgressRing({ progress, className }) {
       </svg>
 
       <div className="absolute inset-[16%] flex flex-col items-center justify-center text-center leading-none">
-        <p className={cn('font-bold tabular-nums text-2xl h-tall:text-4xl h-xtall:text-5xl', done ? 'text-emerald-400' : 'text-white')}>
+        <p className={cn('font-bold tabular-nums text-2xl h-tall:text-4xl h-xtall:text-5xl', done ? 'text-emerald-400' : 'text-ot-text')}>
           {progress.percent}
           <span className="text-[0.5em] font-semibold text-ot-text-muted">%</span>
         </p>

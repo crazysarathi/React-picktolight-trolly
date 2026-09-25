@@ -16,7 +16,7 @@ import {
   workflowReducer,
 } from '../src/lib/workflow.js';
 import { findOrderByBarcode, resolveOrder, resolvePatient, getKnownBarcodes } from '../src/lib/orders.js';
-import { hexToRgb, mix, luminance, rgbToHsl, teamThemeVars } from '../src/lib/teamTheme.js';
+import { hexToRgb, mix, luminance, rgbToHsl, teamThemeVars, teamThemeMode } from '../src/lib/teamTheme.js';
 import { normalizeLayout, resolveLocation, locationSegments, formatLocation } from '../src/lib/locations.js';
 
 const catalogue = [
@@ -352,25 +352,33 @@ test('confirmed order runs to completion like a direct start', () => {
 
 console.log('team theme');
 
-test('teamThemeVars derives every theme variable from the team\'s from/to colours', () => {
+test('teamThemeVars derives every theme variable from the team\'s from/to colours (dark theme)', () => {
   const vars = teamThemeVars({ key: 'red', from: '#dc2626', to: '#7f1d1d' });
   const rgbKeys = [
     '--ot-bg-top', '--ot-bg-mid', '--ot-bg-bottom', '--ot-surface-top', '--ot-surface-bottom',
-    '--ot-surface-elev-top', '--ot-surface-elev-bottom', '--ot-btn-secondary-top', '--ot-btn-secondary-bottom', '--ot-text-muted',
-    '--ot-action', '--ot-action-fill', '--ot-action-fg', '--ot-action-hover', '--ot-border',
+    '--ot-surface-elev-top', '--ot-surface-elev-bottom', '--ot-btn-secondary-top', '--ot-btn-secondary-bottom',
+    '--ot-text', '--ot-text-muted', '--ot-action', '--ot-action-fill', '--ot-action-fg', '--ot-action-hover', '--ot-border',
+    '--ot-ok-100', '--ot-ok-300', '--ot-ok-400', '--ot-warn-100', '--ot-warn-300', '--ot-warn-400',
   ];
   assert.deepEqual(Object.keys(vars), [...rgbKeys, '--ring', '--background']);
   for (const k of rgbKeys) assert.match(vars[k], /^\d{1,3} \d{1,3} \d{1,3}$/, k);
   for (const k of ['--ring', '--background']) assert.match(vars[k], /^\d{1,3} \d{1,3}% \d{1,3}%$/, k);
   const lum = (s) => s.split(' ').reduce((a, b) => a + Number(b), 0);
+  assert.equal(teamThemeMode({ from: '#dc2626', to: '#7f1d1d' }), 'dark');
   assert.ok(lum(vars['--ot-surface-top']) < lum('127 29 29'), 'cards are darker than the page colour');
+  assert.equal(vars['--ot-text'], '255 255 255', 'dark theme: white text');
   assert.ok(lum(vars['--ot-text-muted']) > lum('220 38 38'), 'muted text is a pale tint of the team colour');
   assert.ok(lum(vars['--ot-action']) > lum('220 38 38'), 'accent text is a light tint of the team colour');
   assert.equal(vars['--ot-action-fill'], '220 38 38', 'solid buttons use the vivid team colour');
   assert.equal(vars['--ot-action-fg'], '255 255 255', 'red buttons get white text');
-  const yellow = teamThemeVars({ key: 'yellow', from: '#facc15', to: '#a16207' });
+  assert.equal(vars['--ot-ok-400'], '52 211 153', 'dark theme keeps emerald-400');
+  assert.equal(vars['--ot-warn-300'], '252 211 77', 'dark theme keeps amber-300');
+  const yellow = teamThemeVars({ key: 'yellow', from: '#ffff00', to: '#b39700' });
+  assert.equal(teamThemeMode({ from: '#ffff00', to: '#b39700' }), 'dark', 'pure yellow (dark `to`) stays a dark theme');
+  assert.equal(yellow['--ot-text'], '255 255 255');
+  assert.equal(yellow['--ot-action-fill'], '255 255 0');
   assert.notEqual(yellow['--ot-action-fg'], '255 255 255', 'yellow buttons get dark text');
-  assert.ok(luminance(hexToRgb('#facc15')) > luminance(hexToRgb('#dc2626')));
+  assert.ok(luminance(hexToRgb('#ffff00')) > luminance(hexToRgb('#dc2626')));
   assert.equal(luminance([255, 255, 255]), 1);
   assert.equal(rgbToHsl([255, 0, 0]), '0 100% 50%');
   assert.equal(rgbToHsl([0, 0, 0]), '0 0% 0%');
@@ -380,6 +388,37 @@ test('teamThemeVars derives every theme variable from the team\'s from/to colour
   assert.deepEqual(mix([100, 100, 100], [0, 0, 0], 0.5), [50, 50, 50]);
   assert.equal(teamThemeVars({ from: 'red', to: '#000' }), null); // invalid colour → default theme
   assert.equal(teamThemeVars(null), null);
+  assert.equal(teamThemeMode({ from: 'red', to: '#000' }), null);
+  assert.equal(teamThemeMode(undefined), null);
+});
+
+test('a light team (white) flips to the light theme: light surfaces, black text, black accents and buttons', () => {
+  const team = { key: 'white', from: '#ffffff', to: '#d4d4d8' };
+  const vars = teamThemeVars(team);
+  const dark = teamThemeVars({ key: 'red', from: '#dc2626', to: '#7f1d1d' });
+  assert.deepEqual(Object.keys(vars), Object.keys(dark), 'same variable set as the dark theme');
+  const lum = (s) => luminance(s.split(' ').map(Number));
+  assert.equal(teamThemeMode(team), 'light');
+  assert.equal(vars['--ot-text'], '0 0 0', 'text is black');
+  assert.ok(lum(vars['--ot-surface-top']) > 0.7 && lum(vars['--ot-surface-bottom']) > 0.6, 'cards are light');
+  assert.ok(lum(vars['--ot-bg-bottom']) > lum(vars['--ot-surface-top']), 'the scan zone is a lighter well inside the card');
+  assert.ok(lum(vars['--ot-bg-top']) < lum(vars['--ot-surface-bottom']), 'header bar / overlay backdrop are a deeper grey');
+  assert.ok(lum(vars['--ot-action']) < 0.05, 'accent (labels, icons, borders, scan frame) is near-black');
+  assert.equal(vars['--ot-action-fill'], vars['--ot-action'], 'solid buttons are the same near-black');
+  assert.equal(vars['--ot-action-fg'], '255 255 255', '… with white text on them');
+  assert.ok(lum(vars['--ot-action-hover']) > lum(vars['--ot-action-fill']), 'hover lightens the black button a little');
+  assert.ok(lum(vars['--ot-text-muted']) < 0.2, 'muted text is a dark grey');
+  assert.ok(lum(vars['--ot-border']) < 0.3, 'borders are mid/dark grey');
+  assert.equal(vars['--ot-ok-400'], '4 120 87', 'status green darkens to emerald-700');
+  assert.equal(vars['--ot-ok-100'], '6 78 59');
+  assert.equal(vars['--ot-warn-400'], '217 119 6', 'status amber darkens to amber-600');
+  assert.equal(vars['--ot-warn-100'], '69 26 3', 'warning body text is a deep amber');
+  for (const k of ['--ot-ok-100', '--ot-ok-300', '--ot-ok-400', '--ot-warn-100', '--ot-warn-300', '--ot-warn-400']) {
+    assert.ok(lum(vars[k]) < lum(dark[k]), `${k} is darker on the light theme`);
+  }
+  // the flip is decided by `to`: a white team with a dark grey `to` is still a dark theme
+  assert.equal(teamThemeMode({ from: '#ffffff', to: '#404040' }), 'dark');
+  assert.equal(teamThemeVars({ from: '#ffffff', to: '#404040' })['--ot-text'], '255 255 255');
 });
 
 console.log('medicine locations (route map)');

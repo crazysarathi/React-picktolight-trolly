@@ -296,12 +296,12 @@ export default function RoomMap({ layout, medicines = [], statuses = [], activeI
                   y={c.y + c.h / 2}
                   dy="0.35em"
                   textAnchor="middle"
-                  className={cn('font-bold text-[9px] h-short:text-[11px]', state ? 'fill-white' : 'fill-ot-text-muted/80')}
+                  className={cn('font-bold text-[9px] h-short:text-[11px]', state ? 'fill-ot-text' : 'fill-ot-text-muted/80')}
                 >
                   {c.key}
                 </text>
                 {active && <circle cx={led.x} cy={led.y} r={6} className={cn('animate-soft-pulse', tone.ledHalo)} />}
-                <circle cx={led.x} cy={led.y} r={active ? 3 : state ? 2.5 : 2} className={active ? 'fill-white' : state ? tone.led : 'fill-ot-border/50'} />
+                <circle cx={led.x} cy={led.y} r={active ? 3 : state ? 2.5 : 2} className={active ? 'fill-ot-text' : state ? tone.led : 'fill-ot-border/50'} />
               </g>
             );
           })}
@@ -349,7 +349,7 @@ export default function RoomMap({ layout, medicines = [], statuses = [], activeI
           <motion.g style={{ x: trolleyX, y: trolleyY }} aria-hidden="true">
             {hasTrack && <circle r={TROLLEY_R + 7} className={cn('animate-soft-pulse', t.trolleyHalo)} />}
             <circle r={TROLLEY_R} strokeWidth={2} className={cn('fill-ot-surface-elev-top', hasTrack ? t.trolley : 'stroke-ot-border/60')} />
-            <ShoppingCart x={-7} y={-7} width={14} height={14} className="text-white" strokeWidth={2} />
+            <ShoppingCart x={-7} y={-7} width={14} height={14} className="text-ot-text" strokeWidth={2} />
           </motion.g>
         </svg>
       </div>
